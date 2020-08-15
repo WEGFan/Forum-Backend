@@ -26,11 +26,7 @@ public class ConstructableFromValueEnumConverter extends BidirectionalConverter<
 
     @Override
     public boolean canConvert(Type<?> sourceType, Type<?> destinationType) {
-        log.debug("{} {}", sourceType.getRawType(), destinationType.getRawType());
         Type<?> enumType, valueType;
-        boolean sourceIsEnum = sourceType.isEnum() && Arrays.stream(sourceType.getInterfaces())
-                .anyMatch(i -> i.getRawType().equals(ConstructableFromValue.class));
-
         if (isConstructableFromValueEnum(sourceType)) {
             enumType = sourceType;
             valueType = destinationType;
@@ -49,7 +45,6 @@ public class ConstructableFromValueEnumConverter extends BidirectionalConverter<
     @Override
     @SuppressWarnings("unchecked")
     public Object convert(Object source, Type<?> destinationType, MappingContext mappingContext) {
-        log.debug("{} {}", source, destinationType);
         if (source.getClass().isEnum()) {
             return convertTo((ConstructableFromValue<Object>)source, (Type<Object>)destinationType, mappingContext);
         } else {

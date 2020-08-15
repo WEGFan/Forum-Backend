@@ -5,9 +5,6 @@ import cn.wegfan.forum.model.vo.response.ResultVo;
 import cn.wegfan.forum.util.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,10 +21,7 @@ public class UserController {
      * 登录
      */
     @PostMapping("login")
-    public ResultVo login(@RequestParam String username, @RequestParam String password) {
-        Subject subject = SecurityUtils.getSubject();
-        UsernamePasswordToken token = new UsernamePasswordToken(username, password);
-        subject.login(token);
+    public ResultVo login() {
         throw new BusinessException(BusinessErrorEnum.NotImplemented);
     }
 
@@ -36,7 +30,6 @@ public class UserController {
      */
     @PostMapping("logout")
     public ResultVo logout() {
-        log.info("{}", SecurityUtils.getSubject().getPrincipal());
         throw new BusinessException(BusinessErrorEnum.NotImplemented);
     }
 
