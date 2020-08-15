@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.wegfan.forum.mapper.LinkMapper">
+    <select id="selectNotDeletedList" resultType="Link">
+        SELECT *
+        FROM link
+        WHERE delete_time IS NULL
+    </select>
+
+    <select id="selectNotDeletedByLinkId" resultType="Link">
+        SELECT *
+        FROM link
+        WHERE delete_time IS NULL
+          AND id = #{linkId}
+    </select>
+
+    <update id="deleteByLinkId">
+        UPDATE link
+        SET delete_time = now()
+        WHERE id = #{linkId}
+    </update>
+</mapper>

@@ -1,20 +1,23 @@
 package cn.wegfan.forum.controller;
 
-import cn.wegfan.forum.constant.BusinessErrorEnum;
+import cn.wegfan.forum.model.vo.request.IdRequestVo;
+import cn.wegfan.forum.model.vo.request.LinkRequestVo;
 import cn.wegfan.forum.model.vo.response.ResultVo;
-import cn.wegfan.forum.util.BusinessException;
+import cn.wegfan.forum.service.LinkServiceFacade;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @Slf4j
 @RestController
 @RequestMapping("/api/link")
 public class LinkController {
+
+    @Autowired
+    private LinkServiceFacade linkServiceFacade;
 
     @Autowired
     private MapperFacade mapperFacade;
@@ -24,31 +27,34 @@ public class LinkController {
      */
     @GetMapping("link-list")
     public ResultVo getCategoryList() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        return ResultVo.success(linkServiceFacade.getLinkList());
     }
 
     /**
      * 【管理】添加友情链接
      */
     @PostMapping("add-link")
-    public ResultVo addLink() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+    public ResultVo addLink(@Valid @RequestBody LinkRequestVo requestVo) {
+        linkServiceFacade.addLink(requestVo);
+        return ResultVo.success(null);
     }
 
     /**
      * 【管理】编辑友情链接
      */
     @PostMapping("update-link")
-    public ResultVo updateLink() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+    public ResultVo updateLink(@Valid @RequestBody LinkRequestVo requestVo) {
+        linkServiceFacade.updateLink(requestVo);
+        return ResultVo.success(null);
     }
 
     /**
      * 【管理】删除友情链接
      */
     @PostMapping("delete-link")
-    public ResultVo deleteLink() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+    public ResultVo deleteLink(@Valid @RequestBody IdRequestVo requestVo) {
+        linkServiceFacade.deleteLink(requestVo.getId());
+        return ResultVo.success(null);
     }
 
 }
