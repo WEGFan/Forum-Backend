@@ -34,6 +34,7 @@ mybatis-plus:
     db-config:
       id-type: 'auto'
       update-strategy: 'ignored'
+      column-format: '`%s`'
   type-enums-package: 'cn.wegfan.forum.constant'
   type-aliases-package: 'cn.wegfan.forum.model.entity'
 
