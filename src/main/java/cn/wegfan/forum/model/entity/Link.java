@@ -1,8 +1,11 @@
 package cn.wegfan.forum.model.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import org.apache.ibatis.type.Alias;
 
+import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -18,6 +21,7 @@ public class Link implements Serializable {
     /**
      * 友情链接编号
      */
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**
@@ -33,6 +37,7 @@ public class Link implements Serializable {
     /**
      * 图标地址
      */
+    @Nullable
     private String iconUrl;
 
     /**
@@ -58,6 +63,7 @@ public class Link implements Serializable {
     /**
      * 删除时间
      */
+    @Nullable
     private Date deleteTime;
 
 }
