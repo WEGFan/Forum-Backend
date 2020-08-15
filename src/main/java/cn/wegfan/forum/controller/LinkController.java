@@ -20,7 +20,7 @@ public class LinkController {
     private MapperFacade mapperFacade;
 
     /**
-     * 【管理】查看所有分区
+     * 查看所有友情链接
      */
     @GetMapping("link-list")
     public ResultVo getCategoryList() {
