@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: 'jdbc:mysql://localhost:3306/forum?serverTimezone=Asia/Shanghai'
+    username: 'forum'
+    password: 'forum.%{^_%u<_l,mQnUbyXYwr0QvU:,FHBJ,6"Xg7ff^19Mc<tcCGS2p!ia@F52Gpw3%mUt,1A_*w~3dOd#A'
+  redis:
+    host: 'localhost'
+    port: 6379
+    database: 0
+    password: ''
+
+server:
+  port: 2014

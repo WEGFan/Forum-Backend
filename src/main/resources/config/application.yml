@@ -1,0 +1,41 @@
+spring:
+  profiles:
+    active: 'dev'
+    include: 'pasdasdrod'
+  jackson:
+    date-format: 'yyyy-MM-dd HH:mm:ss'
+    time-zone: 'GMT+8'
+  mvc:
+    format:
+      date: 'yyyy-MM-dd HH:mm:ss'
+    throw-exception-if-no-handler-found: true
+  servlet:
+    multipart:
+      max-file-size: '5MB'
+      max-request-size: '100MB'
+  datasource:
+    hikari:
+      maximum-pool-size: 100
+      max-lifetime: 120000
+      connection-timeout: 15000
+  cache:
+    redis:
+      time-to-live: '1d'
+      key-prefix: 'forum:'
+    type: 'redis'
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    lazy-loading-enabled: true
+    default-executor-type: 'reuse'
+    auto-mapping-unknown-column-behavior: 'warning'
+  global-config:
+    db-config:
+      id-type: 'auto'
+      update-strategy: 'ignored'
+  type-enums-package: 'cn.wegfan.forum.constant'
+  type-aliases-package: 'cn.wegfan.forum.model.entity'
+
+logging:
+  config: 'classpath:logback-spring.xml'
