@@ -5,6 +5,7 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 
 import javax.annotation.Nullable;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
@@ -23,6 +24,7 @@ public class LinkRequestVo implements Serializable {
      * 名称 最大30字符
      */
     @NotNull
+    @NotBlank
     @Length(max = 30)
     private String name;
 
