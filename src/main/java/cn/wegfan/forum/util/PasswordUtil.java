@@ -15,7 +15,7 @@ public class PasswordUtil {
      *
      * @return 哈希后的密码，64位
      */
-    private static String hashPassword(String plainPassword) {
+    public static String hashPassword(String plainPassword) {
         // base91.encode(b''.join(
         //     h(x.encode()).digest()
         //     for (h, x) in zip([hashlib.sha256, hashlib.sha384, hashlib.sha512], [ ... ])
