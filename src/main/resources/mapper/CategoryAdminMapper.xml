@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.wegfan.forum.mapper.CategoryAdminMapper">
+    <select id="selectListByCategoryId" resultType="CategoryAdmin">
+        SELECT *
+        FROM category_admin
+        WHERE category_id = #{categoryId}
+    </select>
+
+    <select id="selectListByUserId" resultType="CategoryAdmin">
+        SELECT *
+        FROM category_admin
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="countByUserId" resultType="long">
+        SELECT count(*)
+        FROM category_admin
+        WHERE user_id = #{userId}
+    </select>
+</mapper>

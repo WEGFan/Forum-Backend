@@ -16,6 +16,8 @@ public enum BusinessErrorEnum {
     NotFound(404, "接口地址未找到"),
     InternalServerError(500, "内部服务器错误，请联系管理员"),
     LINK_NOT_FOUND(10000, "友情链接不存在"),
+    WRONG_USERNAME_OR_PASSWORD(10001, "用户名或密码错误"),
+    DUPLICATE_USERNAME(10002, "用户名重复"),
     UploadFileTooLarge(10018, "上传的文件过大");
 
     /**

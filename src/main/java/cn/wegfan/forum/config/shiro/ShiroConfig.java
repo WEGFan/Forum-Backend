@@ -1,6 +1,5 @@
 package cn.wegfan.forum.config.shiro;
 
-import org.apache.shiro.authc.credential.SimpleCredentialsMatcher;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.session.mgt.SessionManager;
@@ -60,10 +59,8 @@ public class ShiroConfig {
 
     @Bean
     public Realm realm() {
-        // 由于使用bcrypt加密所以只需要进行字符串比对
-        SimpleCredentialsMatcher matcher = new SimpleCredentialsMatcher();
         CustomRealm customRealm = new CustomRealm();
-        customRealm.setCredentialsMatcher(matcher);
+        customRealm.setCredentialsMatcher(new BcryptCredentialsMatcher());
         customRealm.setCachingEnabled(true);
         return customRealm;
     }

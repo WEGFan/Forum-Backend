@@ -2,14 +2,12 @@ package cn.wegfan.forum.model.entity;
 
 import cn.wegfan.forum.constant.SexEnum;
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import org.apache.ibatis.type.Alias;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 /**
  * 用户
@@ -110,8 +108,5 @@ public class User implements Serializable {
      * 删除时间
      */
     private Date deleteTime;
-
-    @TableField(exist = false)
-    private List<Topic> topicList;
 
 }

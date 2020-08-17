@@ -1,13 +1,18 @@
 package cn.wegfan.forum.controller;
 
 import cn.wegfan.forum.constant.BusinessErrorEnum;
+import cn.wegfan.forum.model.vo.request.UserLoginRequestVo;
+import cn.wegfan.forum.model.vo.request.UserRegisterRequestVo;
 import cn.wegfan.forum.model.vo.response.ResultVo;
+import cn.wegfan.forum.service.UserServiceFacade;
 import cn.wegfan.forum.util.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.validation.Valid;
 
 @Slf4j
 @RestController
@@ -17,12 +22,15 @@ public class UserController {
     @Autowired
     private MapperFacade mapperFacade;
 
+    @Autowired
+    private UserServiceFacade userServiceFacade;
+
     /**
      * 登录
      */
     @PostMapping("login")
-    public ResultVo login() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+    public ResultVo login(@Valid @RequestBody UserLoginRequestVo requestVo) {
+        return ResultVo.success(userServiceFacade.login(requestVo));
     }
 
     /**
@@ -30,15 +38,17 @@ public class UserController {
      */
     @PostMapping("logout")
     public ResultVo logout() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        userServiceFacade.logout();
+        return ResultVo.success(null);
     }
 
     /**
      * 注册
      */
     @PostMapping("register")
-    public ResultVo register() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+    public ResultVo register(@Valid @RequestBody UserRegisterRequestVo requestVo) {
+        userServiceFacade.register(requestVo);
+        return ResultVo.success(null);
     }
 
     /**
