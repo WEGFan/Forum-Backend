@@ -30,12 +30,12 @@ public class LinkServiceImpl extends ServiceImpl<LinkMapper, Link> implements Li
 
     @Override
     @Cacheable(key = "'all'")
-    public List<Link> selectNotDeletedList() {
+    public List<Link> listNotDeletedLinks() {
         return linkMapper.selectNotDeletedList();
     }
 
     @Override
-    public Link selectNotDeletedByLinkId(Long linkId) {
+    public Link getNotDeletedLinkByLinkId(Long linkId) {
         return linkMapper.selectNotDeletedByLinkId(linkId);
     }
 
@@ -66,7 +66,7 @@ public class LinkServiceImpl extends ServiceImpl<LinkMapper, Link> implements Li
 
     @Override
     @CacheEvict(key = "'all'")
-    public int deleteLink(Long linkId) {
+    public int deleteLinkByLinkId(Long linkId) {
         int result = linkMapper.deleteByLinkId(linkId);
         return result;
     }

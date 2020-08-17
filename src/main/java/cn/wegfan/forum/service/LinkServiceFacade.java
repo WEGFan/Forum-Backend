@@ -24,7 +24,7 @@ public class LinkServiceFacade {
     private MapperFacade mapperFacade;
 
     public List<LinkResponseVo> getLinkList() {
-        List<Link> linkList = linkService.selectNotDeletedList();
+        List<Link> linkList = linkService.listNotDeletedLinks();
         List<LinkResponseVo> responseVoList = mapperFacade.mapAsList(linkList, LinkResponseVo.class);
         if (!SecurityUtils.getSubject().isPermitted("admin")) {
             responseVoList.forEach(element -> {
@@ -41,7 +41,7 @@ public class LinkServiceFacade {
     }
 
     public int updateLink(LinkRequestVo requestVo) {
-        Link link = linkService.selectNotDeletedByLinkId(requestVo.getId());
+        Link link = linkService.getNotDeletedLinkByLinkId(requestVo.getId());
         if (link == null) {
             throw new BusinessException(BusinessErrorEnum.LINK_NOT_FOUND);
         }
@@ -50,11 +50,11 @@ public class LinkServiceFacade {
     }
 
     public int deleteLink(Long linkId) {
-        Link link = linkService.selectNotDeletedByLinkId(linkId);
+        Link link = linkService.getNotDeletedLinkByLinkId(linkId);
         if (link == null) {
             throw new BusinessException(BusinessErrorEnum.LINK_NOT_FOUND);
         }
-        return linkService.deleteLink(linkId);
+        return linkService.deleteLinkByLinkId(linkId);
     }
 
 }

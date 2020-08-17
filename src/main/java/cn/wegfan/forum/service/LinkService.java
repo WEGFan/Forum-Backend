@@ -7,14 +7,14 @@ import java.util.List;
 
 public interface LinkService extends IService<Link> {
 
-    List<Link> selectNotDeletedList();
+    List<Link> listNotDeletedLinks();
 
-    Link selectNotDeletedByLinkId(Long linkId);
+    Link getNotDeletedLinkByLinkId(Long linkId);
 
     int addLink(Link link);
 
     int updateLink(Link link);
 
-    int deleteLink(Long linkId);
+    int deleteLinkByLinkId(Long linkId);
 
 }
