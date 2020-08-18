@@ -1,6 +1,7 @@
 package cn.wegfan.forum.service;
 
 import cn.wegfan.forum.constant.BusinessErrorEnum;
+import cn.wegfan.forum.constant.Constant;
 import cn.wegfan.forum.model.entity.Link;
 import cn.wegfan.forum.model.vo.request.LinkRequestVo;
 import cn.wegfan.forum.model.vo.response.LinkResponseVo;
@@ -26,7 +27,7 @@ public class LinkServiceFacade {
     public List<LinkResponseVo> getLinkList() {
         List<Link> linkList = linkService.listNotDeletedLinks();
         List<LinkResponseVo> responseVoList = mapperFacade.mapAsList(linkList, LinkResponseVo.class);
-        if (!SecurityUtils.getSubject().isPermitted("admin")) {
+        if (!SecurityUtils.getSubject().isPermitted(Constant.SHIRO_PERMISSION_ADMIN)) {
             responseVoList.forEach(element -> {
                 element.setCreateTime(null);
                 element.setUpdateTime(null);
