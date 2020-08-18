@@ -45,7 +45,7 @@ public class LinkServiceFacade {
         if (link == null) {
             throw new BusinessException(BusinessErrorEnum.LINK_NOT_FOUND);
         }
-        mapperFacade.map(requestVo, Link.class);
+        mapperFacade.map(requestVo, link);
         return linkService.updateLink(link);
     }
 
