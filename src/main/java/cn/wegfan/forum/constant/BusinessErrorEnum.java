@@ -18,6 +18,8 @@ public enum BusinessErrorEnum {
     LINK_NOT_FOUND(10000, "友情链接不存在"),
     WRONG_USERNAME_OR_PASSWORD(10001, "用户名或密码错误"),
     DUPLICATE_USERNAME(10002, "用户名重复"),
+    DUPLICATE_CATEGORY_NAME(10003, "分区名称重复"),
+    CATEGORY_NOT_FOUND(10004, "分区不存在"),
     UploadFileTooLarge(10018, "上传的文件过大");
 
     /**
