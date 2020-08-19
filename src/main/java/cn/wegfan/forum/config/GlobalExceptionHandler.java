@@ -4,7 +4,7 @@ import cn.wegfan.forum.constant.BusinessErrorEnum;
 import cn.wegfan.forum.model.vo.response.ResultVo;
 import cn.wegfan.forum.util.BusinessException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.authz.AuthorizationException;
+import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.ObjectError;
@@ -39,10 +39,19 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * 处理用户没有登录的请求
+     */
+    @ExceptionHandler(UnauthenticatedException.class)
+    public ResultVo handleUnauthenticatedException(UnauthenticatedException e) {
+        log.warn("{}", e.getMessage());
+        return ResultVo.businessError(new BusinessException(BusinessErrorEnum.UserNotLogin));
+    }
+
+    /**
      * 处理没有权限的请求
      */
-    @ExceptionHandler({UnauthorizedException.class, AuthorizationException.class})
-    public ResultVo handleUnauthorizedException(Exception e) {
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResultVo handleUnauthorizedException(UnauthorizedException e) {
         log.warn("{}", e.getMessage());
         return ResultVo.businessError(new BusinessException(BusinessErrorEnum.Unauthorized));
     }
