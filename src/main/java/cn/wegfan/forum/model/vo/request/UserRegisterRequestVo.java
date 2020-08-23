@@ -27,6 +27,7 @@ public class UserRegisterRequestVo implements Serializable {
      */
     @NotNull
     @Length(min = 6, max = 20)
+    @Pattern(regexp = "[\\u0020-\\u007e]+", message = "密码只能包含大小写字母、数字、空格、符号")
     private String password;
 
     /**
