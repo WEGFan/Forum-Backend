@@ -20,6 +20,9 @@ public enum BusinessErrorEnum {
     DUPLICATE_USERNAME(10002, "用户名重复"),
     DUPLICATE_CATEGORY_NAME(10003, "分区名称重复"),
     CATEGORY_NOT_FOUND(10004, "分区不存在"),
+    BOARD_NOT_FOUND(10005, "板块不存在"),
+    DUPLICATE_BOARD_NAME(10006, "板块名称重复"),
+    WRONG_OLD_PASSWORD(10007, "旧密码错误"),
     UploadFileTooLarge(10018, "上传的文件过大");
 
     /**
