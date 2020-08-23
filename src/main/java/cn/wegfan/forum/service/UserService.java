@@ -1,5 +1,6 @@
 package cn.wegfan.forum.service;
 
+import cn.wegfan.forum.constant.SexEnum;
 import cn.wegfan.forum.model.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -14,5 +15,9 @@ public interface UserService extends IService<User> {
     int updateUserLoginTimeAndIpByUserId(Long userId, Date loginTime, String loginIp);
 
     int addUserByRegister(User user);
+
+    int updateUserPersonalInfoByUserId(Long userId, String nickname, SexEnum sex, String signature);
+
+    int updateUserPasswordByUserId(Long userId, String newPassword);
 
 }

@@ -1,13 +1,17 @@
 package cn.wegfan.forum.service;
 
 import cn.wegfan.forum.constant.BusinessErrorEnum;
+import cn.wegfan.forum.constant.SexEnum;
 import cn.wegfan.forum.model.entity.User;
+import cn.wegfan.forum.model.vo.request.UpdatePersonalPasswordRequestVo;
+import cn.wegfan.forum.model.vo.request.UpdatePersonalUserInfoRequestVo;
 import cn.wegfan.forum.model.vo.request.UserLoginRequestVo;
 import cn.wegfan.forum.model.vo.request.UserRegisterRequestVo;
 import cn.wegfan.forum.model.vo.response.UserLoginResponseVo;
 import cn.wegfan.forum.model.vo.response.UserRoleResponseVo;
 import cn.wegfan.forum.util.BusinessException;
 import cn.wegfan.forum.util.PasswordUtil;
+import cn.wegfan.forum.util.SessionUtil;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.apache.shiro.SecurityUtils;
@@ -70,7 +74,7 @@ public class UserServiceFacade {
     public void logout() {
         Subject subject = SecurityUtils.getSubject();
         // 如果用户本身未登录
-        if (subject == null) {
+        if (subject.getPrincipal() == null) {
             throw new BusinessException(BusinessErrorEnum.UserNotLogin);
         }
         subject.logout();
@@ -87,6 +91,47 @@ public class UserServiceFacade {
         user.setPassword(PasswordUtil.encryptPasswordBcrypt(user.getPassword()));
 
         userService.addUserByRegister(user);
+    }
+
+    public void updatePersonalUserInfo(UpdatePersonalUserInfoRequestVo requestVo) {
+        Subject subject = SecurityUtils.getSubject();
+        if (subject.getPrincipal() == null) {
+            throw new BusinessException(BusinessErrorEnum.UserNotLogin);
+        }
+        Long userId = (Long)subject.getPrincipal();
+        userService.updateUserPersonalInfoByUserId(userId, requestVo.getNickname(),
+                SexEnum.fromValue(requestVo.getSex()), requestVo.getSignature());
+    }
+
+    public void updatePersonalPassword(UpdatePersonalPasswordRequestVo requestVo) {
+        // TODO: 邮箱验证码
+        Subject subject = SecurityUtils.getSubject();
+        if (subject.getPrincipal() == null) {
+            throw new BusinessException(BusinessErrorEnum.UserNotLogin);
+        }
+        Long userId = (Long)subject.getPrincipal();
+        User currentUser = userService.getNotDeletedUserByUserId(userId);
+        if (currentUser == null) {
+            throw new BusinessException(BusinessErrorEnum.UserNotLogin);
+        }
+        String correctOldPassword = currentUser.getPassword();
+        boolean oldPasswordCorrect = PasswordUtil.checkPasswordBcrypt(requestVo.getOldPassword(), correctOldPassword);
+        if (!oldPasswordCorrect) {
+            throw new BusinessException(BusinessErrorEnum.WRONG_OLD_PASSWORD);
+        }
+        String encryptedPassword = PasswordUtil.encryptPasswordBcrypt(requestVo.getNewPassword());
+        userService.updateUserPasswordByUserId(userId, encryptedPassword);
+        // 删除该用户的其他会话
+        SessionUtil.removeOtherSessionsByUserId(userId);
+        // 用新的密码重新登录
+        UsernamePasswordToken token = new UsernamePasswordToken(userId.toString(), requestVo.getNewPassword());
+        try {
+            subject.login(token);
+        } catch (AuthenticationException e) {
+            // 如果报错可能是因为刚好用户被禁用或删除
+            subject.logout();
+            throw new BusinessException(BusinessErrorEnum.UserNotLogin);
+        }
     }
 
 }

@@ -22,4 +22,20 @@
             last_login_ip = #{loginIp}
         WHERE id = #{userId}
     </update>
+
+    <update id="updateUserPersonalInfoByUserId">
+        UPDATE user
+        SET update_time = now(),
+            nickname = #{nickname},
+            sex = #{sex},
+            signature = #{signature}
+        WHERE id = #{userId}
+    </update>
+
+    <update id="updateUserPasswordByUserId">
+        UPDATE user
+        SET update_time = now(),
+            password = #{newPassword}
+        WHERE id = #{userId}
+    </update>
 </mapper>

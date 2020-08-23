@@ -1,6 +1,8 @@
 package cn.wegfan.forum.controller;
 
 import cn.wegfan.forum.constant.BusinessErrorEnum;
+import cn.wegfan.forum.model.vo.request.UpdatePersonalPasswordRequestVo;
+import cn.wegfan.forum.model.vo.request.UpdatePersonalUserInfoRequestVo;
 import cn.wegfan.forum.model.vo.request.UserLoginRequestVo;
 import cn.wegfan.forum.model.vo.request.UserRegisterRequestVo;
 import cn.wegfan.forum.model.vo.response.ResultVo;
@@ -79,8 +81,9 @@ public class UserController {
      * 修改个人资料
      */
     @PostMapping("update-info")
-    public ResultVo updatePersonalUserInfo() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+    public ResultVo updatePersonalUserInfo(@Valid @RequestBody UpdatePersonalUserInfoRequestVo requestVo) {
+        userServiceFacade.updatePersonalUserInfo(requestVo);
+        return ResultVo.success(null);
     }
 
     /**
@@ -95,8 +98,9 @@ public class UserController {
      * 修改密码
      */
     @PostMapping("update-password")
-    public ResultVo updatePassword() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+    public ResultVo updatePassword(@Valid @RequestBody UpdatePersonalPasswordRequestVo requestVo) {
+        userServiceFacade.updatePersonalPassword(requestVo);
+        return ResultVo.success(null);
     }
 
     /**

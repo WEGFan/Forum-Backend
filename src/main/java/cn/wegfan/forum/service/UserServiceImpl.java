@@ -44,6 +44,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public int addUserByRegister(User user) {
+        // TODO: 换一种删空格方式
         user.setNickname(StringUtils.deleteWhitespace(user.getNickname()));
         user.setEmailVerified(false);
         user.setSex(SexEnum.SECRET);
@@ -57,6 +58,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user.setRegisterTime(now);
         user.setUpdateTime(now);
         return userMapper.insert(user);
+    }
+
+    @Override
+    public int updateUserPersonalInfoByUserId(Long userId, String nickname, SexEnum sex, String signature) {
+        return userMapper.updateUserPersonalInfoByUserId(userId, nickname, sex, signature);
+    }
+
+    @Override
+    public int updateUserPasswordByUserId(Long userId, String newPassword) {
+        return userMapper.updateUserPasswordByUserId(userId, newPassword);
     }
 
 }
