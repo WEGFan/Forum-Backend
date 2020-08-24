@@ -959,6 +959,11 @@ null
         "type": 0, // 主题类型，0-普通主题，1-公告
         "title": "a", // 标题
         "shortContent": "a a [图片] eeee", // 短内容，纯文字
+        "images": [ // 图片列表（最多三张）
+            "http://example.com/1.jpg",
+            "http://example.com/2.jpg",
+            "http://example.com/3.jpg"
+        ],
         "submitTime": "2020-08-04 16:00:00", // 发帖时间
         "submitterUserId": 1, // 发帖人用户编号
         "submitterNickname": "a", // 发帖人昵称
@@ -1018,6 +1023,11 @@ null
         "type": 0, // 主题类型，0-普通主题，1-公告
         "title": "a", // 标题
         "shortContent": "a a [图片] eeee", // 短内容，纯文字
+        "images": [ // 图片列表（最多三张）
+            "http://example.com/1.jpg",
+            "http://example.com/2.jpg",
+            "http://example.com/3.jpg"
+        ],
         "submitTime": "2020-08-04 16:00:00", // 发帖时间
         "viewCount": 1, // 浏览次数
         "replyCount": 1, // 回复数
