@@ -611,12 +611,14 @@ null
     {
         "id": 1, // 用户编号
         "username": "a", // 用户名
-        "nickname": "a" // 昵称
+        "nickname": "a", // 昵称
+        "deleted": true // 是否已被删除
     },
     {
         "id": 2,
         "username": "b",
-        "nickname": "b"
+        "nickname": "b",
+        "deleted": false
     }
 ]
 ```
