@@ -942,6 +942,7 @@ null
 | featured     | 精华主题          |
 | pinned       | 置顶主题          |
 | announcement | 公告主题          |
+| all          | 全部主题          |
 
 排序方式：
 
@@ -1006,6 +1007,7 @@ null
 | featured     | 精华主题          |
 | pinned       | 置顶主题          |
 | announcement | 公告主题          |
+| all          | 全部主题          |
 
 排序方式：
 
@@ -1076,6 +1078,7 @@ null
 | featured     | 精华主题          |
 | pinned       | 置顶主题          |
 | announcement | 公告主题          |
+| all          | 全部主题          |
 
 排序方式：
 
