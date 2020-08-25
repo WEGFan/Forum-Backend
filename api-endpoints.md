@@ -678,36 +678,9 @@ null
 null
 ```
 
-### 【管理】添加版主
+### 【管理】设置版主
 
-`POST /api/user/add-board-admin`
-
-#### 权限
-
-管理员
-
-#### 参数
-
-```json5
-{
-    "userId": 1, // 用户编号
-    "boardIdList": [ // 板块编号列表
-        1,
-        2,
-        3
-    ]
-}
-```
-
-#### 操作成功时返回对象
-
-```json5
-null
-```
-
-### 【管理】删除版主
-
-`POST /api/user/delete-board-admin`
+`POST /api/user/update-board-admin`
 
 #### 权限
 
@@ -732,36 +705,9 @@ null
 null
 ```
 
-### 【管理】添加分区版主
+### 【管理】设置分区版主
 
-`POST /api/user/add-category-admin`
-
-#### 权限
-
-管理员
-
-#### 参数
-
-```json5
-{
-    "userId": 1, // 用户编号
-    "categoryIdList": [ // 分区编号列表
-        1,
-        2,
-        3
-    ]
-}
-```
-
-#### 操作成功时返回对象
-
-```json5
-null
-```
-
-### 【管理】删除分区版主
-
-`POST /api/user/delete-category-admin`
+`POST /api/user/update-category-admin`
 
 #### 权限
 
