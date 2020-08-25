@@ -6,6 +6,7 @@ import cn.wegfan.forum.util.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -29,12 +31,15 @@ public class GlobalExceptionHandler {
     @Value("${spring.profiles.active}")
     private String activeProfile;
 
+    @Autowired
+    private HttpServletRequest request;
+
     /**
      * 处理上传文件大小超过限制
      */
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResultVo handleMaxUploadSizeExceededException(MaxUploadSizeExceededException e) {
-        log.warn("{}", e.getMessage());
+        log.warn("<{}> 上传文件大小超过限制：{}", request.getRequestURI(), e.getMessage());
         return ResultVo.businessError(new BusinessException(BusinessErrorEnum.UploadFileTooLarge));
     }
 
@@ -43,7 +48,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(UnauthenticatedException.class)
     public ResultVo handleUnauthenticatedException(UnauthenticatedException e) {
-        log.warn("{}", e.getMessage());
+        log.warn("<{}> 用户没有登录：{}", request.getRequestURI(), e.getMessage());
         return ResultVo.businessError(new BusinessException(BusinessErrorEnum.UserNotLogin));
     }
 
@@ -52,7 +57,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(UnauthorizedException.class)
     public ResultVo handleUnauthorizedException(UnauthorizedException e) {
-        log.warn("{}", e.getMessage());
+        log.warn("<{}> 用户没有权限：{}", request.getRequestURI(), e.getMessage());
         return ResultVo.businessError(new BusinessException(BusinessErrorEnum.Unauthorized));
     }
 
@@ -61,7 +66,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResultVo handleInvalidArgumentException(MethodArgumentNotValidException e) {
-        log.warn("参数校验失败，输入值：{}", e.getBindingResult().getTarget());
+        log.warn("<{}> 参数校验失败，输入值：{}", request.getRequestURI(), e.getBindingResult().getTarget());
         List<ObjectError> errors = e.getBindingResult().getAllErrors();
         return ResultVo.validationError(errors);
     }
@@ -71,7 +76,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(BusinessException.class)
     public ResultVo handleBusinessException(BusinessException e) {
-        log.warn("{}", e.getMessage());
+        log.warn("<{}> 业务异常：{}", request.getRequestURI(), e.getMessage());
         return ResultVo.businessError(e);
     }
 
@@ -80,7 +85,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResultVo handleNumberFormatException(MethodArgumentTypeMismatchException e) {
-        log.warn("{}", e.getMessage());
+        log.warn("<{}> GET参数校验失败：{}", request.getRequestURI(), e.getMessage());
         return ResultVo.error(400, "搜索条件不合法");
     }
 
@@ -89,6 +94,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     public ResultVo handleException(Exception e) {
+        log.error("<{}> 其他异常：{}", request.getRequestURI(), e.getMessage());
         log.error("", e);
         // 如果是生产环境则不显示错误信息
         if ("prod".equals(activeProfile)) {
