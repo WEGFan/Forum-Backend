@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -68,6 +69,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public int updateUserPasswordByUserId(Long userId, String newPassword) {
         return userMapper.updateUserPasswordByUserId(userId, newPassword);
+    }
+
+    @Override
+    public int deleteUserByUserId(Long userId) {
+        return userMapper.deleteByUserId(userId);
+    }
+
+    @Override
+    public List<User> listUsersByName(String user) {
+        return userMapper.selectListByName(user);
     }
 
 }

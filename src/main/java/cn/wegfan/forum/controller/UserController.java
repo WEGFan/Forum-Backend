@@ -1,10 +1,7 @@
 package cn.wegfan.forum.controller;
 
 import cn.wegfan.forum.constant.BusinessErrorEnum;
-import cn.wegfan.forum.model.vo.request.UpdatePersonalPasswordRequestVo;
-import cn.wegfan.forum.model.vo.request.UpdatePersonalUserInfoRequestVo;
-import cn.wegfan.forum.model.vo.request.UserLoginRequestVo;
-import cn.wegfan.forum.model.vo.request.UserRegisterRequestVo;
+import cn.wegfan.forum.model.vo.request.*;
 import cn.wegfan.forum.model.vo.response.ResultVo;
 import cn.wegfan.forum.service.UserServiceFacade;
 import cn.wegfan.forum.util.BusinessException;
@@ -143,7 +140,7 @@ public class UserController {
      */
     @GetMapping("username-list")
     public ResultVo getUsernameList(@RequestParam(required = false) String user) {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        return ResultVo.success(userServiceFacade.getUsernameList(user));
     }
 
     /**
@@ -158,8 +155,9 @@ public class UserController {
      * 【管理】删除用户
      */
     @PostMapping("delete-user")
-    public ResultVo deleteUser() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+    public ResultVo deleteUser(@Valid @RequestBody IdRequestVo requestVo) {
+        userServiceFacade.deleteUser(requestVo.getId());
+        return ResultVo.success(null);
     }
 
     /**

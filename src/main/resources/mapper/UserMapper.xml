@@ -38,4 +38,18 @@
             password = #{newPassword}
         WHERE id = #{userId}
     </update>
+
+    <update id="deleteByUserId">
+        UPDATE user
+        SET delete_time = now()
+        WHERE id = #{userId}
+    </update>
+
+    <select id="selectListByName" resultType="User">
+        SELECT *
+        FROM user
+        WHERE username LIKE concat('%', #{user}, '%')
+           OR nickname LIKE concat('%', #{user}, '%')
+        LIMIT 10
+    </select>
 </mapper>

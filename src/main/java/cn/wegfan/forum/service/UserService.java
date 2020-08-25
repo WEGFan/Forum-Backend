@@ -5,6 +5,7 @@ import cn.wegfan.forum.model.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.Date;
+import java.util.List;
 
 public interface UserService extends IService<User> {
 
@@ -19,5 +20,9 @@ public interface UserService extends IService<User> {
     int updateUserPersonalInfoByUserId(Long userId, String nickname, SexEnum sex, String signature);
 
     int updateUserPasswordByUserId(Long userId, String newPassword);
+
+    int deleteUserByUserId(Long userId);
+
+    List<User> listUsersByName(String user);
 
 }

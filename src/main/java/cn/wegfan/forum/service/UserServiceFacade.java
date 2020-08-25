@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -132,6 +133,27 @@ public class UserServiceFacade {
             subject.logout();
             throw new BusinessException(BusinessErrorEnum.UserNotLogin);
         }
+    }
+
+    public void deleteUser(Long userId) {
+        Long currentUserId = (Long)SecurityUtils.getSubject().getPrincipal();
+        if (userId.equals(currentUserId)) {
+            throw new BusinessException(BusinessErrorEnum.CANT_DELETE_OWN_ACCOUNT);
+        }
+        User user = userService.getNotDeletedUserByUserId(userId);
+        if (user == null) {
+            throw new BusinessException(BusinessErrorEnum.USER_NOT_FOUND);
+        }
+        // 删除该用户的所有会话
+        SessionUtil.removeOtherSessionsByUserId(userId);
+        userService.deleteUserByUserId(userId);
+    }
+
+    public List<UserSearchResponseVo> getUsernameList(String searchName) {
+        // TODO: 更换排序方式
+        List<User> userList = userService.listUsersByName(searchName);
+        List<UserSearchResponseVo> responseVoList = mapperFacade.mapAsList(userList, UserSearchResponseVo.class);
+        return responseVoList;
     }
 
 }

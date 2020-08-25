@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
 
 @Repository
 public interface UserMapper extends BaseMapper<User> {
@@ -19,5 +20,9 @@ public interface UserMapper extends BaseMapper<User> {
     int updateUserPersonalInfoByUserId(Long userId, String nickname, SexEnum sex, String signature);
 
     int updateUserPasswordByUserId(Long userId, String newPassword);
+
+    int deleteByUserId(Long userId);
+
+    List<User> selectListByName(String user);
 
 }

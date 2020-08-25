@@ -23,6 +23,8 @@ public enum BusinessErrorEnum {
     BOARD_NOT_FOUND(10005, "板块不存在"),
     DUPLICATE_BOARD_NAME(10006, "板块名称重复"),
     WRONG_OLD_PASSWORD(10007, "旧密码错误"),
+    CANT_DELETE_OWN_ACCOUNT(10008, "不能删除自己的帐号"),
+    USER_NOT_FOUND(10009, "用户不存在"),
     UploadFileTooLarge(10018, "上传的文件过大");
 
     /**
