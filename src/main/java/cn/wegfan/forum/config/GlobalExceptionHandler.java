@@ -8,6 +8,7 @@ import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -59,6 +60,15 @@ public class GlobalExceptionHandler {
     public ResultVo handleUnauthorizedException(UnauthorizedException e) {
         log.warn("<{}> 用户没有权限：{}", request.getRequestURI(), e.getMessage());
         return ResultVo.businessError(new BusinessException(BusinessErrorEnum.Unauthorized));
+    }
+
+    /**
+     * 处理请求主体类型异常
+     */
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResultVo handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+        log.warn("<{}> 请求主体类型异常：{}", request.getRequestURI(), e.getMessage());
+        return ResultVo.businessError(new BusinessException(BusinessErrorEnum.ValidationError));
     }
 
     /**
