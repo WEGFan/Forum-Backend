@@ -4,8 +4,12 @@ import cn.wegfan.forum.model.entity.Category;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface CategoryMapper extends BaseMapper<Category> {
+
+    List<Long> selectNotDeletedCategoryIdList();
 
     Category selectNotDeletedByName(String name);
 

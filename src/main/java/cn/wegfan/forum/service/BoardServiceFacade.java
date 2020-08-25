@@ -20,6 +20,9 @@ public class BoardServiceFacade {
     @Autowired
     private BoardService boardService;
 
+    @Autowired
+    private BoardAdminService boardAdminService;
+
     public int addBoard(AddBoardRequestVo requestVo) {
         Board sameNameBoard = boardService.getNotDeletedBoardByNameAndCategoryId(requestVo.getName(), requestVo.getCategoryId());
         if (sameNameBoard != null) {
@@ -48,7 +51,9 @@ public class BoardServiceFacade {
         if (board == null) {
             throw new BusinessException(BusinessErrorEnum.BOARD_NOT_FOUND);
         }
-        return boardService.deleteBoardByBoardId(boardId);
+        int result = boardService.deleteBoardByBoardId(boardId);
+        boardAdminService.deleteBoardAdminByBoardId(boardId);
+        return result;
     }
 
 }

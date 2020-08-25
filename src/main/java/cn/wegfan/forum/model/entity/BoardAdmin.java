@@ -24,4 +24,9 @@ public class BoardAdmin implements Serializable {
      */
     private Long boardId;
 
+    public BoardAdmin(Long userId, Long boardId) {
+        this.userId = userId;
+        this.boardId = boardId;
+    }
+
 }

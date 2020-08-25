@@ -19,4 +19,23 @@
         FROM category_admin
         WHERE user_id = #{userId}
     </select>
+
+
+    <select id="selectCategoryIdSetByUserId" resultType="Long">
+        SELECT category_id
+        FROM category_admin
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="selectUserIdSetByCategoryId" resultType="Long">
+        SELECT user_id
+        FROM category_admin
+        WHERE category_id = #{categoryId}
+    </select>
+
+    <delete id="deleteByCategoryId">
+        DELETE
+        FROM category_admin
+        WHERE category_id = #{categoryId}
+    </delete>
 </mapper>

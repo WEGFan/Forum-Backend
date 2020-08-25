@@ -161,35 +161,21 @@ public class UserController {
     }
 
     /**
-     * 【管理】添加版主
+     * 【管理】设置版主
      */
-    @PostMapping("add-board-admin")
-    public ResultVo addBoardAdmin() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+    @PostMapping("update-board-admin")
+    public ResultVo updateBoardAdmin(@Valid @RequestBody UpdateBoardAdminRequestVo requestVo) {
+        userServiceFacade.updateBoardAdmin(requestVo.getUserId(), requestVo.getBoardIdList());
+        return ResultVo.success(null);
     }
 
     /**
-     * 【管理】删除版主
+     * 【管理】设置分区版主
      */
-    @PostMapping("delete-board-admin")
-    public ResultVo deleteBoardAdmin() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
-    }
-
-    /**
-     * 【管理】添加分区版主
-     */
-    @PostMapping("add-category-admin")
-    public ResultVo addCategoryAdmin() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
-    }
-
-    /**
-     * 【管理】删除分区版主
-     */
-    @PostMapping("delete-category-admin")
-    public ResultVo deleteCategoryAdmin() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+    @PostMapping("update-category-admin")
+    public ResultVo updateCategoryAdmin(@Valid @RequestBody UpdateCategoryAdminRequestVo requestVo) {
+        userServiceFacade.updateCategoryAdmin(requestVo.getUserId(), requestVo.getCategoryIdList());
+        return ResultVo.success(null);
     }
 
     /**

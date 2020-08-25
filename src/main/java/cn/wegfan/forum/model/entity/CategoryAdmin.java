@@ -24,4 +24,9 @@ public class CategoryAdmin implements Serializable {
      */
     private Long categoryId;
 
+    public CategoryAdmin(Long userId, Long categoryId) {
+        this.userId = userId;
+        this.categoryId = categoryId;
+    }
+
 }

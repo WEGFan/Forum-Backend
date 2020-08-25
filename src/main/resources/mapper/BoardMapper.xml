@@ -17,6 +17,12 @@
           AND id = #{boardId}
     </select>
 
+    <select id="selectNotDeletedBoardIdList" resultType="Long">
+        SELECT id
+        FROM board
+        WHERE delete_time IS NULL
+    </select>
+
     <update id="deleteByBoardId">
         UPDATE board
         SET delete_time = now()

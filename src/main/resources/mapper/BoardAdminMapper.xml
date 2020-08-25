@@ -19,4 +19,22 @@
         FROM board_admin
         WHERE user_id = #{userId}
     </select>
+
+    <select id="selectBoardIdSetByUserId" resultType="Long">
+        SELECT board_id
+        FROM board_admin
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="selectUserIdSetByBoardId" resultType="Long">
+        SELECT user_id
+        FROM board_admin
+        WHERE board_id = #{boardId}
+    </select>
+
+    <delete id="deleteByBoardId">
+        DELETE
+        FROM board_admin
+        WHERE board_id = #{boardId}
+    </delete>
 </mapper>

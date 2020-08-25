@@ -9,11 +9,13 @@ import cn.wegfan.forum.model.vo.request.UserLoginRequestVo;
 import cn.wegfan.forum.model.vo.request.UserRegisterRequestVo;
 import cn.wegfan.forum.model.vo.response.UserLoginResponseVo;
 import cn.wegfan.forum.model.vo.response.UserRoleResponseVo;
+import cn.wegfan.forum.model.vo.response.UserSearchResponseVo;
 import cn.wegfan.forum.util.BusinessException;
 import cn.wegfan.forum.util.PasswordUtil;
 import cn.wegfan.forum.util.SessionUtil;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -22,7 +24,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -39,6 +43,12 @@ public class UserServiceFacade {
 
     @Autowired
     private CategoryAdminService categoryAdminService;
+
+    @Autowired
+    private BoardService boardService;
+
+    @Autowired
+    private CategoryService categoryService;
 
     public UserLoginResponseVo login(UserLoginRequestVo requestVo) {
         // TODO: 验证码
@@ -154,6 +164,52 @@ public class UserServiceFacade {
         List<User> userList = userService.listUsersByName(searchName);
         List<UserSearchResponseVo> responseVoList = mapperFacade.mapAsList(userList, UserSearchResponseVo.class);
         return responseVoList;
+    }
+
+    public void updateBoardAdmin(Long userId, List<Long> boardIdList) {
+        User user = userService.getNotDeletedUserByUserId(userId);
+        if (user == null) {
+            throw new BusinessException(BusinessErrorEnum.USER_NOT_FOUND);
+        }
+        // 判断列表里的板块是否都存在
+        Set<Long> notExistingBoardIdList = new HashSet<Long>(CollectionUtils.removeAll(boardIdList,
+                boardService.listNotDeletedBoardIds()));
+        log.debug("not exist {}", notExistingBoardIdList);
+        if (!notExistingBoardIdList.isEmpty()) {
+            throw new BusinessException(BusinessErrorEnum.BOARD_NOT_FOUND);
+        }
+
+        Set<Long> currentBoardIdList = boardAdminService.listBoardIdByUserId(userId);
+        Set<Long> needToAdd = new HashSet<Long>(CollectionUtils.removeAll(boardIdList, currentBoardIdList));
+        Set<Long> needToDelete = new HashSet<Long>(CollectionUtils.removeAll(currentBoardIdList, boardIdList));
+        log.debug("old {}, after {}", currentBoardIdList, boardIdList);
+        log.debug("need to add {}", needToAdd);
+        log.debug("need to delete {}", needToDelete);
+        boardAdminService.batchDeleteBoardAdminByUserId(userId, needToDelete);
+        boardAdminService.batchAddBoardAdminByUserId(userId, needToAdd);
+    }
+
+    public void updateCategoryAdmin(Long userId, List<Long> categoryIdList) {
+        User user = userService.getNotDeletedUserByUserId(userId);
+        if (user == null) {
+            throw new BusinessException(BusinessErrorEnum.USER_NOT_FOUND);
+        }
+        // 判断列表里的分区是否都存在
+        Set<Long> notExistingCategoryIdList = new HashSet<Long>(CollectionUtils.removeAll(categoryIdList,
+                categoryService.listNotDeletedCategoryIds()));
+        log.debug("not exist {}", notExistingCategoryIdList);
+        if (!notExistingCategoryIdList.isEmpty()) {
+            throw new BusinessException(BusinessErrorEnum.CATEGORY_NOT_FOUND);
+        }
+
+        Set<Long> currentCategoryIdList = categoryAdminService.listCategoryIdByUserId(userId);
+        Set<Long> needToAdd = new HashSet<Long>(CollectionUtils.removeAll(categoryIdList, currentCategoryIdList));
+        Set<Long> needToDelete = new HashSet<Long>(CollectionUtils.removeAll(currentCategoryIdList, categoryIdList));
+        log.debug("old {}, after {}", currentCategoryIdList, categoryIdList);
+        log.debug("need to add {}", needToAdd);
+        log.debug("need to delete {}", needToDelete);
+        categoryAdminService.batchDeleteCategoryAdminByUserId(userId, needToDelete);
+        categoryAdminService.batchAddCategoryAdminByUserId(userId, needToAdd);
     }
 
 }

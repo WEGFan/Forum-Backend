@@ -7,10 +7,13 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -25,6 +28,12 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     private CategoryMapper categoryMapper;
 
     @Override
+    @Cacheable(key = "'notDeletedIdList'")
+    public List<Long> listNotDeletedCategoryIds() {
+        return categoryMapper.selectNotDeletedCategoryIdList();
+    }
+
+    @Override
     public Category getNotDeletedCategoryByCategoryId(Long categoryId) {
         return categoryMapper.selectNotDeletedByCategoryId(categoryId);
     }
@@ -35,6 +44,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     }
 
     @Override
+    @CacheEvict(key = "'notDeletedIdList'")
     public int addCategory(Category category) {
         category.setId(null);
         Date now = new Date();
@@ -53,6 +63,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     }
 
     @Override
+    @CacheEvict(key = "'notDeletedIdList'")
     public int deleteCategoryByCategoryId(Long categoryId) {
         int result = categoryMapper.deleteByCategoryId(categoryId);
         return result;
