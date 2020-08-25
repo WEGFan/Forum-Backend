@@ -42,6 +42,7 @@ public class LinkServiceImpl extends ServiceImpl<LinkMapper, Link> implements Li
     @Override
     @CacheEvict(key = "'all'")
     public int addLink(Link link) {
+        link.setId(null);
         Date now = new Date();
         link.setCreateTime(now);
         link.setUpdateTime(now);
