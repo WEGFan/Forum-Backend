@@ -916,6 +916,7 @@ null
         "submitTime": "2020-08-04 16:00:00", // 发帖时间
         "submitterUserId": 1, // 发帖人用户编号
         "submitterNickname": "a", // 发帖人昵称
+        "submitterAvatarPath": "/api/file/avatar/xxx.jpg", // 发帖人头像地址
         "viewCount": 1, // 浏览次数
         "replyCount": 1, // 回复数
         "lastReplyTime": "2020-08-04 16:00:00", // 最后回复时间
@@ -979,6 +980,7 @@ null
             "http://example.com/3.jpg"
         ],
         "submitTime": "2020-08-04 16:00:00", // 发帖时间
+        "submitterAvatarPath": "/api/file/avatar/xxx.jpg", // 发帖人头像地址
         "viewCount": 1, // 浏览次数
         "replyCount": 1, // 回复数
         "boardId": 1, // 板块编号
@@ -1312,6 +1314,7 @@ null
         "replierUserId": 1, // 回复者用户编号
         "replierNickname": "a", // 回复者昵称
         "replierSignature": "a", // 回复者个人签名
+        "replierAvatarPath": "/api/file/avatar/xxx.jpg", // 回复者头像地址
         "editTime": "2020-08-04 16:00:00", // 最后编辑时间
         "editorUserId": 1, // 编辑者用户编号
         "editorNickname": "a" // 编辑者昵称
@@ -1344,6 +1347,11 @@ null
         "shortContent": "a a [图片] eeee", // 短内容，纯文字
         "topicId": 1, // 所属主题帖编号
         "topicTitle": "a", // 所属主题帖标题
+        "submitterUserId": 1, // 发帖人用户编号
+        "submitterNickname": "a", // 发帖人昵称
+        "submitterAvatarPath": "/api/file/avatar/xxx.jpg", // 发帖人头像地址
+        "replierUserId": 1, // 回复者用户编号
+        "replierNickname": "a", // 回复者昵称
         "replyTime": "2020-08-04 16:00:00" // 发帖时间
     }
 ]
