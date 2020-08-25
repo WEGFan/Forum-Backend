@@ -1094,6 +1094,7 @@ null
     "submitterUserId": 1, // 发帖人用户编号
     "submitterNickname": "a", // 发帖人昵称
     "submitterSignature": "a", // 发帖人个人签名
+    "submitterAvatarPath": "/api/file/avatar/xxx.jpg", // 发帖人头像地址
     "boardId": 1, // 板块编号
     "boardName": "a", // 板块名称
     "categoryId": 1, // 分区编号
