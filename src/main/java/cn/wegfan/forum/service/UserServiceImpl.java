@@ -4,6 +4,7 @@ import cn.wegfan.forum.constant.Constant;
 import cn.wegfan.forum.constant.SexEnum;
 import cn.wegfan.forum.mapper.UserMapper;
 import cn.wegfan.forum.model.entity.User;
+import cn.wegfan.forum.util.EscapeUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -78,6 +79,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public List<User> listUsersByName(String user) {
+        user = EscapeUtil.escapeSqlLike(user);
         return userMapper.selectListByName(user);
     }
 
