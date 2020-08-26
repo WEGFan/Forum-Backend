@@ -83,4 +83,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return userMapper.selectListByName(user);
     }
 
+    @Override
+    public int updateUser(User user) {
+        user.setUpdateTime(new Date());
+        return userMapper.updateById(user);
+    }
+
 }

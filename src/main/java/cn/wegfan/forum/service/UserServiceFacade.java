@@ -15,6 +15,7 @@ import cn.wegfan.forum.util.SessionUtil;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -236,6 +237,51 @@ public class UserServiceFacade {
 
         Permission permission = mapperFacade.map(requestVo, Permission.class);
         permissionService.addOrUpdateBoardPermission(permission);
+    }
+
+    public void updateUserInfo(UpdateUserInfoRequestVo requestVo) {
+        User user = userService.getNotDeletedUserByUserId(requestVo.getId());
+        if (user == null) {
+            throw new BusinessException(BusinessErrorEnum.USER_NOT_FOUND);
+        }
+        User sameUsernameUser = userService.getNotDeletedUserByUsername(requestVo.getUsername());
+        if (sameUsernameUser != null && !sameUsernameUser.getId().equals(user.getId())) {
+            throw new BusinessException(BusinessErrorEnum.DUPLICATE_USERNAME);
+        }
+
+        boolean isRefreshSessionNeeded = !requestVo.getUsername().equals(user.getUsername()) ||
+                !StringUtils.isEmpty(requestVo.getPassword());
+
+        String plainPassword = requestVo.getPassword();
+
+        if (!StringUtils.isEmpty(requestVo.getPassword())) {
+            // 如果密码不为空的话就加密密码
+            String encryptedPassword = PasswordUtil.encryptPasswordBcrypt(requestVo.getPassword());
+            requestVo.setPassword(encryptedPassword);
+        }
+
+        mapperFacade.map(requestVo, user);
+        userService.updateUser(user);
+
+        if (isRefreshSessionNeeded) {
+            // 删除该用户的会话
+            SessionUtil.removeSessionsByUserId(user.getId(), true);
+
+            // 如果修改的是自己的帐号
+            Subject subject = SecurityUtils.getSubject();
+            if (requestVo.getId().equals(subject.getPrincipal())) {
+                // 用新的密码重新登录
+                UsernamePasswordToken token = new UsernamePasswordToken(user.getId().toString(), plainPassword);
+
+                try {
+                    subject.login(token);
+                } catch (AuthenticationException e) {
+                    // 如果报错可能是因为刚好用户被禁用或删除
+                    subject.logout();
+                    throw new BusinessException(BusinessErrorEnum.UserNotLogin);
+                }
+            }
+        }
     }
 
 }

@@ -5,8 +5,10 @@ import cn.wegfan.forum.model.vo.request.*;
 import cn.wegfan.forum.model.vo.response.ResultVo;
 import cn.wegfan.forum.service.UserServiceFacade;
 import cn.wegfan.forum.util.BusinessException;
+import cn.wegfan.forum.util.ValidateUtil;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -216,8 +218,14 @@ public class UserController {
      * 【管理】修改用户资料
      */
     @PostMapping("update-user-info")
-    public ResultVo updateUserInfo() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+    public ResultVo updateUserInfo(@RequestBody UpdateUserInfoRequestVo requestVo) {
+        // 如果密码是空字符串的话说明不修改密码，设成null
+        if (StringUtils.isEmpty(requestVo.getPassword())) {
+            requestVo.setPassword(null);
+        }
+        ValidateUtil.tryValidateAndThrow(requestVo);
+        userServiceFacade.updateUserInfo(requestVo);
+        return ResultVo.success(null);
     }
 
 }

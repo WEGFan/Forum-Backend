@@ -25,4 +25,6 @@ public interface UserService extends IService<User> {
 
     List<User> listUsersByName(String user);
 
+    int updateUser(User user);
+
 }
