@@ -15,11 +15,12 @@ import java.util.Collection;
 public class SessionUtil {
 
     /**
-     * 根据用户编号删除当前会话以外的所有会话
+     * 根据用户编号删除该用户的所有会话
      *
-     * @param userId 用户编号
+     * @param userId             用户编号
+     * @param keepCurrentSession 是否保留当前会话
      */
-    public static void removeOtherSessionsByUserId(Long userId) {
+    public static void removeSessionsByUserId(Long userId, boolean keepCurrentSession) {
         // TODO: 优化 直接使用hashset存取
         if (userId == null) {
             return;
@@ -34,7 +35,8 @@ public class SessionUtil {
         for (Session session : sessions) {
             String sessionUserId = String.valueOf(session.getAttribute(DefaultSubjectContext.PRINCIPALS_SESSION_KEY));
             String sessionId = (String)session.getId();
-            if (sessionUserId.equals(userId.toString()) && !sessionId.equals(currentSessionId)) {
+            if (sessionUserId.equals(userId.toString()) &&
+                    (!keepCurrentSession || !sessionId.equals(currentSessionId))) {
                 sessionDao.delete(session);
             }
         }

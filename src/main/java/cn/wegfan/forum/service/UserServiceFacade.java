@@ -135,7 +135,7 @@ public class UserServiceFacade {
         String encryptedPassword = PasswordUtil.encryptPasswordBcrypt(requestVo.getNewPassword());
         userService.updateUserPasswordByUserId(userId, encryptedPassword);
         // 删除该用户的其他会话
-        SessionUtil.removeOtherSessionsByUserId(userId);
+        SessionUtil.removeSessionsByUserId(userId, true);
         // 用新的密码重新登录
         UsernamePasswordToken token = new UsernamePasswordToken(userId.toString(), requestVo.getNewPassword());
         try {
@@ -157,7 +157,7 @@ public class UserServiceFacade {
             throw new BusinessException(BusinessErrorEnum.USER_NOT_FOUND);
         }
         // 删除该用户的所有会话
-        SessionUtil.removeOtherSessionsByUserId(userId);
+        SessionUtil.removeSessionsByUserId(userId, false);
         userService.deleteUserByUserId(userId);
     }
 
