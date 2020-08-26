@@ -3,6 +3,7 @@ package cn.wegfan.forum.config;
 import cn.wegfan.forum.constant.BusinessErrorEnum;
 import cn.wegfan.forum.model.vo.response.ResultVo;
 import cn.wegfan.forum.util.BusinessException;
+import cn.wegfan.forum.util.ValidateException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
@@ -79,6 +80,15 @@ public class GlobalExceptionHandler {
         log.warn("<{}> 参数校验失败，输入值：{}", request.getRequestURI(), e.getBindingResult().getTarget());
         List<ObjectError> errors = e.getBindingResult().getAllErrors();
         return ResultVo.validationError(errors);
+    }
+
+    /**
+     * 处理手动校验参数失败
+     */
+    @ExceptionHandler(ValidateException.class)
+    public ResultVo handleValidateException(ValidateException e) {
+        log.warn("<{}> 参数校验失败，输入值：{}", request.getRequestURI(), e.getInputObject());
+        return ResultVo.validationError(e.getErrorList());
     }
 
     /**
