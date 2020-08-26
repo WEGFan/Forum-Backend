@@ -17,4 +17,6 @@ public interface CategoryMapper extends BaseMapper<Category> {
 
     int deleteByCategoryId(Long categoryId);
 
+    List<Category> selectNotDeletedAdminCategoryListByUserId(Long userId);
+
 }

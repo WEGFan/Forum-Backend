@@ -69,4 +69,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         return result;
     }
 
+    @Override
+    public List<Category> listNotDeletedAdminCategoriesByUserId(Long userId) {
+        return categoryMapper.selectNotDeletedAdminCategoryListByUserId(userId);
+    }
+
 }

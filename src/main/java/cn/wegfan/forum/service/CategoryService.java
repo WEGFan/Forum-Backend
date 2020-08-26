@@ -18,5 +18,7 @@ public interface CategoryService extends IService<Category> {
     int updateCategory(Category category);
 
     int deleteCategoryByCategoryId(Long categoryId);
+    
+    List<Category> listNotDeletedAdminCategoriesByUserId(Long userId);
 
 }

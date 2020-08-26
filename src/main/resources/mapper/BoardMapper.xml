@@ -28,4 +28,13 @@
         SET delete_time = now()
         WHERE id = #{boardId}
     </update>
+
+    <select id="selectNotDeletedAdminBoardListByUserId" resultType="Board">
+        SELECT board.*
+        FROM board,
+             board_admin
+        WHERE board.id = board_admin.board_id
+          AND board_admin.user_id = #{userId}
+          AND delete_time IS NULL
+    </select>
 </mapper>

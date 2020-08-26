@@ -68,4 +68,9 @@ public class BoardServiceImpl extends ServiceImpl<BoardMapper, Board> implements
         return boardMapper.deleteByBoardId(boardId);
     }
 
+    @Override
+    public List<Board> listNotDeletedAdminBoardsByUserId(Long userId) {
+        return boardMapper.selectNotDeletedAdminBoardListByUserId(userId);
+    }
+
 }

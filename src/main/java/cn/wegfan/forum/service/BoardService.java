@@ -19,4 +19,5 @@ public interface BoardService extends IService<Board> {
 
     int deleteBoardByBoardId(Long boardId);
 
+    List<Board> listNotDeletedAdminBoardsByUserId(Long userId);
 }

@@ -72,8 +72,8 @@ public class UserController {
      * 查看指定用户的个人中心
      */
     @GetMapping("user-info")
-    public ResultVo getUserInfo(@RequestParam Integer userId) {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+    public ResultVo getUserInfo(@RequestParam Long userId) {
+        return ResultVo.success(userServiceFacade.getUserCenterInfo(userId));
     }
 
     /**

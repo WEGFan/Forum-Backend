@@ -3,12 +3,11 @@ package cn.wegfan.forum.service;
 import cn.wegfan.forum.constant.BusinessErrorEnum;
 import cn.wegfan.forum.constant.SexEnum;
 import cn.wegfan.forum.model.entity.Board;
+import cn.wegfan.forum.model.entity.Category;
 import cn.wegfan.forum.model.entity.Permission;
 import cn.wegfan.forum.model.entity.User;
 import cn.wegfan.forum.model.vo.request.*;
-import cn.wegfan.forum.model.vo.response.UserLoginResponseVo;
-import cn.wegfan.forum.model.vo.response.UserRoleResponseVo;
-import cn.wegfan.forum.model.vo.response.UserSearchResponseVo;
+import cn.wegfan.forum.model.vo.response.*;
 import cn.wegfan.forum.util.BusinessException;
 import cn.wegfan.forum.util.PasswordUtil;
 import cn.wegfan.forum.util.SessionUtil;
@@ -282,6 +281,31 @@ public class UserServiceFacade {
                 }
             }
         }
+    }
+
+    public UserCenterInfoResponseVo getUserCenterInfo(Long userId) {
+        User user = userService.getNotDeletedUserByUserId(userId);
+        if (user == null) {
+            throw new BusinessException(BusinessErrorEnum.USER_NOT_FOUND);
+        }
+
+        UserCenterInfoResponseVo responseVo = mapperFacade.map(user, UserCenterInfoResponseVo.class);
+
+        Long currentUserId = (Long)SecurityUtils.getSubject().getPrincipal();
+        // 如果不是自己的个人中心则隐藏邮箱和邮箱是否已激活
+        // TODO: 判断当前用户是否为管理员
+        if (!userId.equals(currentUserId)) {
+            responseVo.setEmail(null);
+            responseVo.setEmailVerified(null);
+        }
+
+        List<Board> boardAdminList = boardService.listNotDeletedAdminBoardsByUserId(userId);
+        List<Category> categoryAdminList = categoryService.listNotDeletedAdminCategoriesByUserId(userId);
+
+        responseVo.setBoardAdmin(mapperFacade.mapAsList(boardAdminList, IdNameResponseVo.class));
+        responseVo.setCategoryAdmin(mapperFacade.mapAsList(categoryAdminList, IdNameResponseVo.class));
+
+        return responseVo;
     }
 
 }

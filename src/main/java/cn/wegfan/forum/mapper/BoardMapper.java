@@ -17,4 +17,6 @@ public interface BoardMapper extends BaseMapper<Board> {
 
     int deleteByBoardId(Long boardId);
 
+    List<Board> selectNotDeletedAdminBoardListByUserId(Long userId);
+
 }
