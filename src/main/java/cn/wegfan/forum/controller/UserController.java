@@ -198,16 +198,18 @@ public class UserController {
      * 【管理】修改用户的论坛权限
      */
     @PostMapping("update-forum-permission")
-    public ResultVo updateForumPermission() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+    public ResultVo updateForumPermission(@Valid @RequestBody UpdateForumPermissionRequestVo requestVo) {
+        userServiceFacade.updateForumPermission(requestVo);
+        return ResultVo.success(null);
     }
 
     /**
      * 【管理】修改用户的板块权限
      */
     @PostMapping("update-board-permission")
-    public ResultVo updateBoardPermission() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+    public ResultVo updateBoardPermission(@Valid @RequestBody UpdateBoardPermissionRequestVo requestVo) {
+        userServiceFacade.updateBoardPermission(requestVo);
+        return ResultVo.success(null);
     }
 
     /**

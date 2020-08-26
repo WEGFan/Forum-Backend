@@ -1,60 +1,49 @@
-package cn.wegfan.forum.model.entity;
+package cn.wegfan.forum.model.vo.request;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
-import org.apache.ibatis.type.Alias;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
-/**
- * 权限
- */
 @Data
-@Alias("Permission")
-public class Permission implements Serializable {
+public class UpdateForumPermissionRequestVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 主键编号
-     */
-    @TableId(type = IdType.AUTO)
-    private Long id;
-
-    /**
      * 用户编号
      */
+    @NotNull
     private Long userId;
-
-    /**
-     * 板块编号
-     */
-    private Long boardId;
 
     /**
      * 禁止访问
      */
+    @NotNull
     private Boolean banVisit;
 
     /**
      * 禁止发表主题
      */
+    @NotNull
     private Boolean banCreateTopic;
 
     /**
      * 禁止回复
      */
+    @NotNull
     private Boolean banReply;
 
     /**
      * 禁止上传附件
      */
+    @NotNull
     private Boolean banUploadAttachment;
 
     /**
      * 禁止下载附件
      */
+    @NotNull
     private Boolean banDownloadAttachment;
 
 }

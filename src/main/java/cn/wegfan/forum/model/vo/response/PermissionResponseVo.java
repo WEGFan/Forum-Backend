@@ -1,36 +1,13 @@
-package cn.wegfan.forum.model.entity;
+package cn.wegfan.forum.model.vo.response;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
-import org.apache.ibatis.type.Alias;
 
 import java.io.Serializable;
 
-/**
- * 权限
- */
 @Data
-@Alias("Permission")
-public class Permission implements Serializable {
+public class PermissionResponseVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    /**
-     * 主键编号
-     */
-    @TableId(type = IdType.AUTO)
-    private Long id;
-
-    /**
-     * 用户编号
-     */
-    private Long userId;
-
-    /**
-     * 板块编号
-     */
-    private Long boardId;
 
     /**
      * 禁止访问

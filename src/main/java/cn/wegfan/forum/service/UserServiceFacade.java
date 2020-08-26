@@ -2,11 +2,10 @@ package cn.wegfan.forum.service;
 
 import cn.wegfan.forum.constant.BusinessErrorEnum;
 import cn.wegfan.forum.constant.SexEnum;
+import cn.wegfan.forum.model.entity.Board;
+import cn.wegfan.forum.model.entity.Permission;
 import cn.wegfan.forum.model.entity.User;
-import cn.wegfan.forum.model.vo.request.UpdatePersonalPasswordRequestVo;
-import cn.wegfan.forum.model.vo.request.UpdatePersonalUserInfoRequestVo;
-import cn.wegfan.forum.model.vo.request.UserLoginRequestVo;
-import cn.wegfan.forum.model.vo.request.UserRegisterRequestVo;
+import cn.wegfan.forum.model.vo.request.*;
 import cn.wegfan.forum.model.vo.response.UserLoginResponseVo;
 import cn.wegfan.forum.model.vo.response.UserRoleResponseVo;
 import cn.wegfan.forum.model.vo.response.UserSearchResponseVo;
@@ -49,6 +48,9 @@ public class UserServiceFacade {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private PermissionService permissionService;
 
     public UserLoginResponseVo login(UserLoginRequestVo requestVo) {
         // TODO: 验证码
@@ -210,6 +212,30 @@ public class UserServiceFacade {
         log.debug("need to delete {}", needToDelete);
         categoryAdminService.batchDeleteCategoryAdminByUserId(userId, needToDelete);
         categoryAdminService.batchAddCategoryAdminByUserId(userId, needToAdd);
+    }
+
+    public void updateForumPermission(UpdateForumPermissionRequestVo requestVo) {
+        User user = userService.getNotDeletedUserByUserId(requestVo.getUserId());
+        if (user == null) {
+            throw new BusinessException(BusinessErrorEnum.USER_NOT_FOUND);
+        }
+
+        Permission permission = mapperFacade.map(requestVo, Permission.class);
+        permissionService.addOrUpdateForumPermission(permission);
+    }
+
+    public void updateBoardPermission(UpdateBoardPermissionRequestVo requestVo) {
+        User user = userService.getNotDeletedUserByUserId(requestVo.getUserId());
+        if (user == null) {
+            throw new BusinessException(BusinessErrorEnum.USER_NOT_FOUND);
+        }
+        Board board = boardService.getNotDeletedBoardByBoardId(requestVo.getBoardId());
+        if (board == null) {
+            throw new BusinessException(BusinessErrorEnum.BOARD_NOT_FOUND);
+        }
+
+        Permission permission = mapperFacade.map(requestVo, Permission.class);
+        permissionService.addOrUpdateBoardPermission(permission);
     }
 
 }
