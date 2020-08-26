@@ -22,7 +22,7 @@ public class UpdatePersonalPasswordRequestVo implements Serializable {
     private String oldPassword;
 
     /**
-     * 图形验证码 4位
+     * 新密码 6-20位
      */
     @NotNull
     @Length(min = 6, max = 20)
@@ -30,7 +30,7 @@ public class UpdatePersonalPasswordRequestVo implements Serializable {
     private String newPassword;
 
     /**
-     * 图形验证码id
+     * 邮箱验证码
      */
     @NotNull
     @NotBlank
