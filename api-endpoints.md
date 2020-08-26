@@ -845,7 +845,7 @@ null
 {
     "id": 4, // 用户编号
     "username": "a", // 用户名，必填，最大30字符，[A-Za-z0-9_]
-    "password": "aaaaaa", // 密码，必填，6-20位
+    "password": "aaaaaa", // 密码，6-20位，为空字符串表示不更改
     "nickname": "a", // 昵称，必填，最大30字符
     "email": "a@a.cn", // 邮箱，必填，后端校验
     "admin": true, // 是否为管理员，必填
