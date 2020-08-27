@@ -1,6 +1,6 @@
 package cn.wegfan.forum.util;
 
-import cn.hutool.core.util.StrUtil;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * 转义工具类
@@ -15,7 +15,7 @@ public class EscapeUtil {
      * @return 转义后的字符串
      */
     public static String escapeSqlLike(String str) {
-        if (StrUtil.isEmpty(str)) {
+        if (StringUtils.isEmpty(str)) {
             return str;
         }
         // 转义\%_
