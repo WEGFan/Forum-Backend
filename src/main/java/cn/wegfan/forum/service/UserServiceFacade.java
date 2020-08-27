@@ -269,6 +269,11 @@ public class UserServiceFacade {
             requestVo.setPassword(encryptedPassword);
         }
 
+        boolean isEmailNeedToVerify = !requestVo.getEmail().equals(user.getEmail());
+        if (isEmailNeedToVerify) {
+            user.setEmailVerified(false);
+        }
+
         mapperFacade.map(requestVo, user);
         userService.updateUser(user);
 
