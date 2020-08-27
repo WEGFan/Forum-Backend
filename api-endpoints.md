@@ -495,7 +495,7 @@ null
 
 | 字段名   | 字段类型 | 必填 | 含义                         | 样例  |
 | -------- | -------- | ---- | ---------------------------- | ----- |
-| username | string   | 否   | 按用户名精确筛选             | admin |
+| username | string   | 否   | 按用户名模糊筛选             | admin |
 | userType | string   | 否   | 按用户类型筛选，默认为 `all` | user  |
 | page     | int      | 是   | 页码                         | 1     |
 | count    | int      | 是   | 一次获取的个数，上限20       | 20    |
