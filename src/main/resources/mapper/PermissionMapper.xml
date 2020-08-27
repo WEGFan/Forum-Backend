@@ -22,4 +22,11 @@
         WHERE user_id = #{userId}
           AND board_id = #{boardId}
     </select>
+
+    <select id="selectBoardPermissionListByUserId" resultType="Permission">
+        SELECT *
+        FROM permission
+        WHERE user_id = #{userId}
+          AND board_id IS NOT NULL
+    </select>
 </mapper>

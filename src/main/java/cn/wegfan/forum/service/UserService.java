@@ -1,7 +1,9 @@
 package cn.wegfan.forum.service;
 
 import cn.wegfan.forum.constant.SexEnum;
+import cn.wegfan.forum.constant.UserTypeEnum;
 import cn.wegfan.forum.model.entity.User;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.Date;
@@ -28,5 +30,7 @@ public interface UserService extends IService<User> {
     List<User> listUsersByName(String user);
 
     int updateUser(User user);
+
+    Page<User> listNotDeletedUsersByPageAndUsernameAndType(Page<?> page, UserTypeEnum userType, String username);
 
 }

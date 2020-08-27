@@ -2,6 +2,7 @@ package cn.wegfan.forum.service;
 
 import cn.wegfan.forum.constant.BusinessErrorEnum;
 import cn.wegfan.forum.constant.SexEnum;
+import cn.wegfan.forum.constant.UserTypeEnum;
 import cn.wegfan.forum.model.entity.Board;
 import cn.wegfan.forum.model.entity.Category;
 import cn.wegfan.forum.model.entity.Permission;
@@ -11,6 +12,7 @@ import cn.wegfan.forum.model.vo.response.*;
 import cn.wegfan.forum.util.BusinessException;
 import cn.wegfan.forum.util.PasswordUtil;
 import cn.wegfan.forum.util.SessionUtil;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.apache.commons.collections.CollectionUtils;
@@ -22,10 +24,9 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -104,6 +105,7 @@ public class UserServiceFacade {
         user.setPassword(PasswordUtil.encryptPasswordBcrypt(user.getPassword()));
 
         userService.addUserByRegister(user);
+        permissionService.addOrUpdateForumPermission(Permission.getDefaultForumPermission(user.getId()));
     }
 
     public void updatePersonalUserInfo(UpdatePersonalUserInfoRequestVo requestVo) {
@@ -324,7 +326,64 @@ public class UserServiceFacade {
 
         forumPermission.setUserId(userId);
         permissionService.addOrUpdateForumPermission(forumPermission);
+    }
 
+    public PageResultVo<UserResponseVo> getUserList(String username, String userType, long pageIndex, long pageSize) {
+        Page<User> page = new Page<>(pageIndex, pageSize);
+
+        UserTypeEnum userTypeEnum = UserTypeEnum.fromValue(userType, UserTypeEnum.ALL);
+        Page<User> pageResult = userService.listNotDeletedUsersByPageAndUsernameAndType(page, userTypeEnum, username);
+
+        List<UserResponseVo> responseVoList = mapperFacade.mapAsList(pageResult.getRecords(), UserResponseVo.class);
+        responseVoList.forEach(item -> {
+            // TODO: 优化
+            Long userId = item.getId();
+
+            // 设置版主和分区版主
+            List<Board> boardAdminList = boardService.listNotDeletedAdminBoardsByUserId(userId);
+            List<Category> categoryAdminList = categoryService.listNotDeletedAdminCategoriesByUserId(userId);
+
+            item.setBoardAdmin(mapperFacade.mapAsList(boardAdminList, IdNameResponseVo.class));
+            item.setCategoryAdmin(mapperFacade.mapAsList(categoryAdminList, IdNameResponseVo.class));
+
+            // 设置论坛权限
+            Permission forumPermission = permissionService.getForumPermissionByUserId(userId);
+            item.setForumPermission(mapperFacade.map(forumPermission, PermissionResponseVo.class));
+
+            // 设置板块权限
+            List<Permission> boardPermissionList = permissionService.listBoardPermissionsByUserId(userId);
+            List<Long> boardIdList = boardPermissionList.stream()
+                    .map(Permission::getBoardId)
+                    .collect(Collectors.toList());
+            Map<Long, Board> boardMap = boardService.batchListNotDeletedBoardsByBoardIds(boardIdList)
+                    .stream()
+                    .collect(Collectors.toMap(Board::getId, Function.identity()));
+
+            List<IdNamePermissionResponseVo> boardPermissionVoList = mapperFacade.mapAsList(boardPermissionList, IdNamePermissionResponseVo.class);
+
+            for (int i = 0; i < boardPermissionVoList.size(); i++) {
+                Long boardId = boardPermissionList.get(i).getBoardId();
+                boardPermissionVoList.get(i).setId(boardId);
+                boardPermissionVoList.get(i).setName(boardMap.get(boardId).getName());
+            }
+            item.setBoardPermission(boardPermissionVoList);
+
+            // 设置用户类型
+            UserTypeEnum responseUserType;
+            if (item.getAdmin()) {
+                responseUserType = UserTypeEnum.ADMIN;
+            } else if (item.getSuperBoardAdmin()) {
+                responseUserType = UserTypeEnum.SUPER_BOARD_ADMIN;
+            } else if (!item.getCategoryAdmin().isEmpty()) {
+                responseUserType = UserTypeEnum.CATEGORY_ADMIN;
+            } else if (!item.getBoardAdmin().isEmpty()) {
+                responseUserType = UserTypeEnum.BOARD_ADMIN;
+            } else {
+                responseUserType = UserTypeEnum.NORMAL_USER;
+            }
+            item.setUserType(responseUserType.getName());
+        });
+        return new PageResultVo<>(responseVoList, pageResult);
     }
 
 }

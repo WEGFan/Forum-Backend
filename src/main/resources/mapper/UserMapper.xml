@@ -52,4 +52,104 @@
            OR nickname LIKE concat('%', #{user}, '%')
         LIMIT 10
     </select>
+
+    <select id="selectNotDeletedUserListByPageAndUsername" resultType="User">
+        SELECT *
+        FROM user
+        <where>
+            AND delete_time IS NULL
+            <if test="username != null">
+                AND username LIKE concat('%', #{username}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectNotDeletedNormalUserListByPageAndUsername" resultType="User">
+        SELECT *
+        FROM user
+        <where>
+            AND delete_time IS NULL
+            AND id NOT IN (SELECT user_id FROM board_admin)
+            AND id NOT IN (SELECT user_id FROM category_admin)
+            AND super_board_admin = 0
+            AND admin = 0
+            <if test="username != null">
+                AND username LIKE concat('%', #{username}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectNotDeletedBoardAdminListByPageAndUsername" resultType="User">
+        SELECT *
+        FROM user
+        <where>
+            AND delete_time IS NULL
+            AND id IN (SELECT user_id FROM board_admin)
+            <if test="username != null">
+                AND username LIKE concat('%', #{username}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectNotDeletedCategoryAdminListByPageAndUsername" resultType="User">
+        SELECT *
+        FROM user
+        <where>
+            AND delete_time IS NULL
+            AND id IN (SELECT user_id FROM category_admin)
+            <if test="username != null">
+                AND username LIKE concat('%', #{username}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectNotDeletedSuperBoardAdminListByPageAndUsername" resultType="User">
+        SELECT *
+        FROM user
+        <where>
+            AND delete_time IS NULL
+            AND super_board_admin = 1
+            <if test="username != null">
+                AND username LIKE concat('%', #{username}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectNotDeletedAdminListByPageAndUsername" resultType="User">
+        SELECT *
+        FROM user
+        <where>
+            AND delete_time IS NULL
+            AND admin = 1
+            <if test="username != null">
+                AND username LIKE concat('%', #{username}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectNotDeletedBanVisitListByPageAndUsername" resultType="User">
+        SELECT DISTINCT user.*
+        FROM user, permission
+        <where>
+            AND delete_time IS NULL
+            AND user.id = permission.user_id
+            AND permission.ban_visit = 1
+            <if test="username != null">
+                AND username LIKE concat('%', #{username}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectNotDeletedBanCreateTopicAndReplyListByPageAndUsername" resultType="User">
+        SELECT DISTINCT user.*
+        FROM user, permission
+        <where>
+            AND delete_time IS NULL
+            AND user.id = permission.user_id
+            AND (permission.ban_create_topic = 1 OR permission.ban_reply = 1)
+            <if test="username != null">
+                AND username LIKE concat('%', #{username}, '%')
+            </if>
+        </where>
+    </select>
 </mapper>

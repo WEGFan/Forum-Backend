@@ -11,6 +11,8 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Slf4j
 @Service
 @CacheConfig(cacheNames = "permission")
@@ -57,6 +59,11 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
         return saveOrUpdate(permission, Wrappers.<Permission>lambdaUpdate()
                 .eq(Permission::getUserId, permission.getUserId())
                 .eq(Permission::getBoardId, permission.getBoardId()));
+    }
+
+    @Override
+    public List<Permission> listBoardPermissionsByUserId(Long userId) {
+        return permissionMapper.selectBoardPermissionListByUserId(userId);
     }
 
 }

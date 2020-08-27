@@ -2,9 +2,11 @@ package cn.wegfan.forum.service;
 
 import cn.wegfan.forum.constant.Constant;
 import cn.wegfan.forum.constant.SexEnum;
+import cn.wegfan.forum.constant.UserTypeEnum;
 import cn.wegfan.forum.mapper.UserMapper;
 import cn.wegfan.forum.model.entity.User;
 import cn.wegfan.forum.util.EscapeUtil;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -104,6 +106,36 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public int updateUser(User user) {
         user.setUpdateTime(new Date());
         return userMapper.updateById(user);
+    }
+
+    @Override
+    public Page<User> listNotDeletedUsersByPageAndUsernameAndType(Page<?> page, UserTypeEnum userType, String username) {
+        username = username.trim();
+        if (StringUtils.isEmpty(username)) {
+            username = null;
+        } else {
+            username = EscapeUtil.escapeSqlLike(username);
+        }
+
+        switch (userType) {
+            case NORMAL_USER:
+                return userMapper.selectNotDeletedNormalUserListByPageAndUsername(page, username);
+            case BOARD_ADMIN:
+                return userMapper.selectNotDeletedBoardAdminListByPageAndUsername(page, username);
+            case CATEGORY_ADMIN:
+                return userMapper.selectNotDeletedCategoryAdminListByPageAndUsername(page, username);
+            case SUPER_BOARD_ADMIN:
+                return userMapper.selectNotDeletedSuperBoardAdminListByPageAndUsername(page, username);
+            case ADMIN:
+                return userMapper.selectNotDeletedAdminListByPageAndUsername(page, username);
+            case BAN_VISIT:
+                return userMapper.selectNotDeletedBanVisitListByPageAndUsername(page, username);
+            case BAN_REPLY:
+                return userMapper.selectNotDeletedBanCreateTopicAndReplyListByPageAndUsername(page, username);
+            case ALL:
+            default:
+                return userMapper.selectNotDeletedUserListByPageAndUsername(page, username);
+        }
     }
 
 }

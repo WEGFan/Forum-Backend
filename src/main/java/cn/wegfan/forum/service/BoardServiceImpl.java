@@ -2,6 +2,7 @@ package cn.wegfan.forum.service;
 
 import cn.wegfan.forum.mapper.BoardMapper;
 import cn.wegfan.forum.model.entity.Board;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -12,6 +13,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -71,6 +73,15 @@ public class BoardServiceImpl extends ServiceImpl<BoardMapper, Board> implements
     @Override
     public List<Board> listNotDeletedAdminBoardsByUserId(Long userId) {
         return boardMapper.selectNotDeletedAdminBoardListByUserId(userId);
+    }
+
+    @Override
+    public List<Board> batchListNotDeletedBoardsByBoardIds(List<Long> idList) {
+        if (idList.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return boardMapper.selectList(Wrappers.<Board>lambdaQuery()
+                .in(Board::getId, idList));
     }
 
 }

@@ -57,4 +57,20 @@ public class Permission implements Serializable {
      */
     private Boolean banDownloadAttachment;
 
+    private static Permission getDefaultPermission() {
+        Permission permission = new Permission();
+        permission.setBanVisit(false);
+        permission.setBanCreateTopic(false);
+        permission.setBanReply(false);
+        permission.setBanUploadAttachment(false);
+        permission.setBanDownloadAttachment(false);
+        return permission;
+    }
+
+    public static Permission getDefaultForumPermission(Long userId) {
+        Permission permission = getDefaultPermission();
+        permission.setUserId(userId);
+        return permission;
+    }
+
 }

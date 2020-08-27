@@ -5,6 +5,7 @@ import cn.wegfan.forum.model.vo.request.*;
 import cn.wegfan.forum.model.vo.response.ResultVo;
 import cn.wegfan.forum.service.UserServiceFacade;
 import cn.wegfan.forum.util.BusinessException;
+import cn.wegfan.forum.util.PaginationUtil;
 import cn.wegfan.forum.util.ValidateUtil;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -132,9 +133,10 @@ public class UserController {
     @GetMapping("user-list")
     public ResultVo getUserList(@RequestParam(required = false) String username,
                                 @RequestParam(required = false) String userType,
-                                @RequestParam Integer page,
-                                @RequestParam Integer count) {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+                                @RequestParam Long page,
+                                @RequestParam Long count) {
+        count = PaginationUtil.clampPageSize(count);
+        return ResultVo.success(userServiceFacade.getUserList(username, userType, page, count));
     }
 
     /**
