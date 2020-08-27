@@ -12,4 +12,9 @@ public class Constant {
      */
     public static final String SHIRO_PERMISSION_ADMIN = "admin";
 
+    /**
+     * 最大分页大小
+     */
+    public static final long MAX_PAGE_SIZE = 20;
+
 }
