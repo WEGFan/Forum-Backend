@@ -100,6 +100,10 @@ public class UserServiceFacade {
         if (sameUsernameUser != null) {
             throw new BusinessException(BusinessErrorEnum.DUPLICATE_USERNAME);
         }
+        User sameEmailUser = userService.getNotDeletedUserByEmail(requestVo.getEmail());
+        if (sameEmailUser != null) {
+            throw new BusinessException(BusinessErrorEnum.DUPLICATE_EMAIL);
+        }
 
         User user = mapperFacade.map(requestVo, User.class);
         user.setPassword(PasswordUtil.encryptPasswordBcrypt(user.getPassword()));
@@ -249,6 +253,10 @@ public class UserServiceFacade {
         if (sameUsernameUser != null && !sameUsernameUser.getId().equals(user.getId())) {
             throw new BusinessException(BusinessErrorEnum.DUPLICATE_USERNAME);
         }
+        User sameEmailUser = userService.getNotDeletedUserByEmail(requestVo.getEmail());
+        if (sameEmailUser != null && !sameEmailUser.getId().equals(user.getId())) {
+            throw new BusinessException(BusinessErrorEnum.DUPLICATE_EMAIL);
+        }
 
         boolean isRefreshSessionNeeded = !requestVo.getUsername().equals(user.getUsername()) ||
                 !StringUtils.isEmpty(requestVo.getPassword());
@@ -314,6 +322,10 @@ public class UserServiceFacade {
         User sameUsernameUser = userService.getNotDeletedUserByUsername(requestVo.getUsername());
         if (sameUsernameUser != null) {
             throw new BusinessException(BusinessErrorEnum.DUPLICATE_USERNAME);
+        }
+        User sameEmailUser = userService.getNotDeletedUserByEmail(requestVo.getEmail());
+        if (sameEmailUser != null) {
+            throw new BusinessException(BusinessErrorEnum.DUPLICATE_EMAIL);
         }
 
         String plainPassword = requestVo.getPassword();

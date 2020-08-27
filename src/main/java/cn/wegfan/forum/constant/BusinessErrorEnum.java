@@ -25,6 +25,7 @@ public enum BusinessErrorEnum {
     WRONG_OLD_PASSWORD(10007, "旧密码错误"),
     CANT_DELETE_OWN_ACCOUNT(10008, "不能删除自己的帐号"),
     USER_NOT_FOUND(10009, "用户不存在"),
+    DUPLICATE_EMAIL(10010, "邮箱已被使用"),
     UploadFileTooLarge(10018, "上传的文件过大");
 
     /**

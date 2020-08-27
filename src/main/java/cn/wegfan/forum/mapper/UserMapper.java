@@ -16,6 +16,8 @@ public interface UserMapper extends BaseMapper<User> {
 
     User selectNotDeletedByUsername(String username);
 
+    User selectNotDeletedByEmail(String email);
+
     int updateUserLoginTimeAndIpByUserId(Long userId, Date loginTime, String loginIp);
 
     int updateUserPersonalInfoByUserId(Long userId, String nickname, SexEnum sex, String signature);

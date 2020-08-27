@@ -42,6 +42,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
+    public User getNotDeletedUserByEmail(String email) {
+        return userMapper.selectNotDeletedByEmail(email);
+    }
+
+    @Override
     public int updateUserLoginTimeAndIpByUserId(Long userId, Date loginTime, String loginIp) {
         return userMapper.updateUserLoginTimeAndIpByUserId(userId, loginTime, loginIp);
     }

@@ -15,6 +15,8 @@ public interface UserService extends IService<User> {
 
     User getNotDeletedUserByUsername(String username);
 
+    User getNotDeletedUserByEmail(String email);
+    
     int updateUserLoginTimeAndIpByUserId(Long userId, Date loginTime, String loginIp);
 
     int addUserByRegister(User user);
