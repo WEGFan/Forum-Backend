@@ -485,7 +485,7 @@ null
 
 ### 【管理】查看用户列表
 
-`GET /api/user/user-list?username=&type=&page=&count=`
+`GET /api/user/user-list?username=&userType=&page=&count=`
 
 #### 权限
 
