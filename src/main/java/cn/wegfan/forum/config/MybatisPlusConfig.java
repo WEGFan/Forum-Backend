@@ -1,5 +1,6 @@
 package cn.wegfan.forum.config;
 
+import cn.wegfan.forum.constant.Constant;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
@@ -20,7 +21,7 @@ public class MybatisPlusConfig {
         // 设置请求的页面大于最大页后操作，true调回到首页，false继续请求
         paginationInterceptor.setOverflow(false);
         // 设置最大单页限制数量
-        paginationInterceptor.setLimit(500);
+        paginationInterceptor.setLimit(Constant.MAX_PAGE_SIZE);
         return paginationInterceptor;
     }
 
