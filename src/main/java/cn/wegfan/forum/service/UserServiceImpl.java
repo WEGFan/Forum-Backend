@@ -63,6 +63,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
+    public int addUserByAdmin(User user) {
+        // TODO: 换一种删空格方式
+        user.setNickname(StringUtils.deleteWhitespace(user.getNickname()));
+        user.setEmailVerified(false);
+        user.setSex(SexEnum.SECRET);
+        user.setSignature("");
+        user.setSuperBoardAdmin(false);
+        user.setAvatarPath(Constant.DEFAULT_AVATAR_PATH);
+        user.setTopicCount(0L);
+        user.setReplyCount(0L);
+        Date now = new Date();
+        user.setRegisterTime(now);
+        user.setUpdateTime(now);
+        return userMapper.insert(user);
+    }
+
+    @Override
     public int updateUserPersonalInfoByUserId(Long userId, String nickname, SexEnum sex, String signature) {
         return userMapper.updateUserPersonalInfoByUserId(userId, nickname, sex, signature);
     }

@@ -17,6 +17,8 @@ public interface UserService extends IService<User> {
 
     int addUserByRegister(User user);
 
+    int addUserByAdmin(User user);
+
     int updateUserPersonalInfoByUserId(Long userId, String nickname, SexEnum sex, String signature);
 
     int updateUserPasswordByUserId(Long userId, String newPassword);

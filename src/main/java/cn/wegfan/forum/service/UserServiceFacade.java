@@ -308,4 +308,23 @@ public class UserServiceFacade {
         return responseVo;
     }
 
+    public void addUserByAdmin(AddUserRequestVo requestVo) {
+        User sameUsernameUser = userService.getNotDeletedUserByUsername(requestVo.getUsername());
+        if (sameUsernameUser != null) {
+            throw new BusinessException(BusinessErrorEnum.DUPLICATE_USERNAME);
+        }
+
+        String plainPassword = requestVo.getPassword();
+        requestVo.setPassword(PasswordUtil.encryptPasswordBcrypt(plainPassword));
+        User user = mapperFacade.map(requestVo, User.class);
+
+        Permission forumPermission = mapperFacade.map(requestVo.getForumPermission(), Permission.class);
+        userService.addUserByAdmin(user);
+        Long userId = user.getId();
+
+        forumPermission.setUserId(userId);
+        permissionService.addOrUpdateForumPermission(forumPermission);
+
+    }
+
 }

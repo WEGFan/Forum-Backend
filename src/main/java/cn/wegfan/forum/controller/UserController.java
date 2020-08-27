@@ -149,8 +149,9 @@ public class UserController {
      * 【管理】添加用户
      */
     @PostMapping("add-user")
-    public ResultVo addUser() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+    public ResultVo addUser(@Valid @RequestBody AddUserRequestVo requestVo) {
+        userServiceFacade.addUserByAdmin(requestVo);
+        return ResultVo.success(null);
     }
 
     /**
