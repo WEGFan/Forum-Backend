@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResultVo handleMaxUploadSizeExceededException(MaxUploadSizeExceededException e) {
         log.warn("<{}> 上传文件大小超过限制：{}", request.getRequestURI(), e.getMessage());
-        return ResultVo.businessError(new BusinessException(BusinessErrorEnum.UploadFileTooLarge));
+        return ResultVo.businessError(new BusinessException(BusinessErrorEnum.UPLOAD_FILE_TOO_LARGE));
     }
 
     /**
@@ -51,7 +51,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UnauthenticatedException.class)
     public ResultVo handleUnauthenticatedException(UnauthenticatedException e) {
         log.warn("<{}> 用户没有登录：{}", request.getRequestURI(), e.getMessage());
-        return ResultVo.businessError(new BusinessException(BusinessErrorEnum.UserNotLogin));
+        return ResultVo.businessError(new BusinessException(BusinessErrorEnum.USER_NOT_LOGIN));
     }
 
     /**
@@ -60,7 +60,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UnauthorizedException.class)
     public ResultVo handleUnauthorizedException(UnauthorizedException e) {
         log.warn("<{}> 用户没有权限：{}", request.getRequestURI(), e.getMessage());
-        return ResultVo.businessError(new BusinessException(BusinessErrorEnum.Unauthorized));
+        return ResultVo.businessError(new BusinessException(BusinessErrorEnum.UNAUTHORIZED));
     }
 
     /**
@@ -69,7 +69,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResultVo handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
         log.warn("<{}> 请求主体类型异常：{}", request.getRequestURI(), e.getMessage());
-        return ResultVo.businessError(new BusinessException(BusinessErrorEnum.ValidationError));
+        return ResultVo.businessError(new BusinessException(BusinessErrorEnum.VALIDATION_ERROR));
     }
 
     /**
@@ -118,9 +118,9 @@ public class GlobalExceptionHandler {
         log.error("", e);
         // 如果是生产环境则不显示错误信息
         if ("prod".equals(activeProfile)) {
-            return ResultVo.businessError(new BusinessException(BusinessErrorEnum.InternalServerError));
+            return ResultVo.businessError(new BusinessException(BusinessErrorEnum.INTERNAL_SERVER_ERROR));
         }
-        return ResultVo.error(BusinessErrorEnum.InternalServerError.getErrorCode(),
+        return ResultVo.error(BusinessErrorEnum.INTERNAL_SERVER_ERROR.getErrorCode(),
                 String.format("内部服务器错误，错误信息：%s", e.toString()));
     }
 

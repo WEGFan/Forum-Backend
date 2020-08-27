@@ -25,7 +25,7 @@ public class ReplyController {
     public ResultVo getTopicReplyList(@RequestParam Integer topicId,
                                       @RequestParam Integer page,
                                       @RequestParam Integer count) {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
     /**
@@ -35,7 +35,7 @@ public class ReplyController {
     public ResultVo getUserReplyList(@RequestParam Integer userId,
                                      @RequestParam Integer page,
                                      @RequestParam Integer count) {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
     /**
@@ -49,7 +49,7 @@ public class ReplyController {
                                  @RequestParam(required = false) Date to,
                                  @RequestParam Integer page,
                                  @RequestParam Integer count) {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
     /**
@@ -57,7 +57,7 @@ public class ReplyController {
      */
     @PostMapping("add-reply")
     public ResultVo addReply() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
     /**
@@ -65,7 +65,7 @@ public class ReplyController {
      */
     @PostMapping("update-reply")
     public ResultVo updateReply() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
     /**
@@ -73,7 +73,7 @@ public class ReplyController {
      */
     @PostMapping("batch-delete-reply")
     public ResultVo batchDeleteReply() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
     /**
@@ -81,7 +81,7 @@ public class ReplyController {
      */
     @PostMapping("delete-reply")
     public ResultVo deleteReply() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
 }

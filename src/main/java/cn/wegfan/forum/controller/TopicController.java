@@ -27,7 +27,7 @@ public class TopicController {
                                       @RequestParam(required = false) String sort,
                                       @RequestParam Integer page,
                                       @RequestParam Integer count) {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
     /**
@@ -39,7 +39,7 @@ public class TopicController {
                                      @RequestParam(required = false) String sort,
                                      @RequestParam Integer page,
                                      @RequestParam Integer count) {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
     /**
@@ -55,7 +55,7 @@ public class TopicController {
                                  @RequestParam(required = false) String sort,
                                  @RequestParam Integer page,
                                  @RequestParam Integer count) {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
     /**
@@ -63,7 +63,7 @@ public class TopicController {
      */
     @GetMapping("topic-detail")
     public ResultVo getTopicDetail(@RequestParam Integer topicId) {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
     /**
@@ -71,7 +71,7 @@ public class TopicController {
      */
     @PostMapping("add-topic")
     public ResultVo addTopic() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
     /**
@@ -79,7 +79,7 @@ public class TopicController {
      */
     @PostMapping("update-topic")
     public ResultVo updateTopic() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
     /**
@@ -87,7 +87,7 @@ public class TopicController {
      */
     @PostMapping("manage-topic")
     public ResultVo adminManageTopic() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
     /**
@@ -95,7 +95,7 @@ public class TopicController {
      */
     @PostMapping("delete-topic")
     public ResultVo deleteTopic() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
     /**
@@ -103,7 +103,7 @@ public class TopicController {
      */
     @GetMapping("topic-operation-log")
     public ResultVo getTopicOperationLog(@RequestParam Integer topicId) {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
 }

@@ -30,7 +30,7 @@ public class AttachmentController {
                                       @RequestParam(required = false) Date to,
                                       @RequestParam Integer page,
                                       @RequestParam Integer count) {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
     /**
@@ -38,7 +38,7 @@ public class AttachmentController {
      */
     @PostMapping("upload-image")
     public ResultVo uploadImage(@RequestParam("file") MultipartFile multipartFile) {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
     /**
@@ -46,7 +46,7 @@ public class AttachmentController {
      */
     @PostMapping("upload-attachment")
     public ResultVo uploadAttachment(@RequestParam("file") MultipartFile multipartFile) {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
     /**
@@ -54,7 +54,7 @@ public class AttachmentController {
      */
     @PostMapping("delete-attachment")
     public ResultVo deleteAttachment() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
 }

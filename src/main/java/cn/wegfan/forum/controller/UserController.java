@@ -58,7 +58,7 @@ public class UserController {
      */
     @PostMapping("send-email-verify-code")
     public ResultVo sendEmailVerifyCode() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
     /**
@@ -66,7 +66,7 @@ public class UserController {
      */
     @PostMapping("reset-password")
     public ResultVo resetPassword() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
     /**
@@ -91,7 +91,7 @@ public class UserController {
      */
     @PostMapping("update-avatar")
     public ResultVo updateAvatar(@RequestParam("file") MultipartFile multipartFile) {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
     /**
@@ -108,7 +108,7 @@ public class UserController {
      */
     @PostMapping("verify-email")
     public ResultVo verifyEmail() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
     /**
@@ -116,7 +116,7 @@ public class UserController {
      */
     @PostMapping("update-email")
     public ResultVo updateEmail() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
     /**
@@ -124,7 +124,7 @@ public class UserController {
      */
     @GetMapping("board-permission")
     public ResultVo getBoardPermission(@RequestParam Integer boardId) {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
     /**
@@ -188,7 +188,7 @@ public class UserController {
      */
     @PostMapping("add-super-board-admin")
     public ResultVo addSuperBoardAdmin() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
     /**
@@ -196,7 +196,7 @@ public class UserController {
      */
     @PostMapping("delete-super-board-admin")
     public ResultVo deleteSuperBoardAdmin() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
     /**

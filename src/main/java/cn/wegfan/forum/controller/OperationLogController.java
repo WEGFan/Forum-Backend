@@ -26,7 +26,7 @@ public class OperationLogController {
     public ResultVo getOperationLogList(@RequestParam(required = false) String username,
                                         @RequestParam Integer page,
                                         @RequestParam Integer count) {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
 }

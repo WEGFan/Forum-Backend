@@ -30,7 +30,7 @@ public class CategoryController {
     @GetMapping("category-list")
     public ResultVo getCategoryList(@RequestParam Integer page,
                                     @RequestParam Integer count) {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
     /**
@@ -38,7 +38,7 @@ public class CategoryController {
      */
     @GetMapping("category-name-list")
     public ResultVo getCategoryNameList() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
     /**

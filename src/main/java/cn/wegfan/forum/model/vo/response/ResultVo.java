@@ -77,7 +77,7 @@ public class ResultVo {
             }
             errorMessageList.add(error.getDefaultMessage());
         }
-        BusinessErrorEnum validationError = BusinessErrorEnum.ValidationError;
+        BusinessErrorEnum validationError = BusinessErrorEnum.VALIDATION_ERROR;
         return new ResultVo(null, validationError.getErrorCode(),
                 validationError.getErrorMessage(), errorData);
     }

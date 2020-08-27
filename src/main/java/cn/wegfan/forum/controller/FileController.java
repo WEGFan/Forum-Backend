@@ -24,7 +24,7 @@ public class FileController {
      */
     @GetMapping("avatar/{filename}")
     public ResultVo getAvatarFile(@PathVariable String filename) {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
     /**
@@ -32,7 +32,7 @@ public class FileController {
      */
     @GetMapping("image/{filename}")
     public ResultVo getImageFile(@PathVariable String filename) {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
     /**
@@ -40,7 +40,7 @@ public class FileController {
      */
     @GetMapping("attachment/{filename}")
     public ResultVo getAttachmentFile(@PathVariable String filename) {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
 }

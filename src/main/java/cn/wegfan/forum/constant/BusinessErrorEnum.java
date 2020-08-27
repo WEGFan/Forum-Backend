@@ -9,12 +9,12 @@ import lombok.ToString;
 @Getter
 @ToString
 public enum BusinessErrorEnum {
-    NotImplemented(-1, "功能暂未实现"),
-    ValidationError(400, "参数校验错误"),
-    Unauthorized(401, "没有权限"),
-    UserNotLogin(403, "用户未登录"),
-    NotFound(404, "接口地址未找到"),
-    InternalServerError(500, "内部服务器错误，请联系管理员"),
+    NOT_IMPLEMENTED(-1, "功能暂未实现"),
+    VALIDATION_ERROR(400, "参数校验错误"),
+    UNAUTHORIZED(401, "没有权限"),
+    USER_NOT_LOGIN(403, "用户未登录"),
+    API_NOT_FOUND(404, "接口地址未找到"),
+    INTERNAL_SERVER_ERROR(500, "内部服务器错误，请联系管理员"),
     LINK_NOT_FOUND(10000, "友情链接不存在"),
     WRONG_USERNAME_OR_PASSWORD(10001, "用户名或密码错误"),
     DUPLICATE_USERNAME(10002, "用户名重复"),
@@ -26,7 +26,7 @@ public enum BusinessErrorEnum {
     CANT_DELETE_OWN_ACCOUNT(10008, "不能删除自己的帐号"),
     USER_NOT_FOUND(10009, "用户不存在"),
     DUPLICATE_EMAIL(10010, "邮箱已被使用"),
-    UploadFileTooLarge(10018, "上传的文件过大");
+    UPLOAD_FILE_TOO_LARGE(10018, "上传的文件过大");
 
     /**
      * 错误代码

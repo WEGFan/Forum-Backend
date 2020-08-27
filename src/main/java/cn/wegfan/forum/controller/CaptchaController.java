@@ -24,7 +24,8 @@ public class CaptchaController {
      */
     @GetMapping("refresh-code")
     public ResultVo refreshCaptcha() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
     /**

@@ -23,7 +23,7 @@ public class ForumController {
      */
     @GetMapping("home-board-list")
     public ResultVo getForumHomeBoardList() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
 }

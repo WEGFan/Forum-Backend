@@ -31,7 +31,7 @@ public class BoardController {
     @GetMapping("board-list")
     public ResultVo getBoardList(@RequestParam Integer page,
                                  @RequestParam Integer count) {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
     /**
@@ -39,7 +39,7 @@ public class BoardController {
      */
     @GetMapping("board-name-list")
     public ResultVo getBoardNameList() {
-        throw new BusinessException(BusinessErrorEnum.NotImplemented);
+        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
     }
 
     /**

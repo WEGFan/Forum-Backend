@@ -89,7 +89,7 @@ public class UserServiceFacade {
         Subject subject = SecurityUtils.getSubject();
         // 如果用户本身未登录
         if (subject.getPrincipal() == null) {
-            throw new BusinessException(BusinessErrorEnum.UserNotLogin);
+            throw new BusinessException(BusinessErrorEnum.USER_NOT_LOGIN);
         }
         subject.logout();
     }
@@ -115,7 +115,7 @@ public class UserServiceFacade {
     public void updatePersonalUserInfo(UpdatePersonalUserInfoRequestVo requestVo) {
         Subject subject = SecurityUtils.getSubject();
         if (subject.getPrincipal() == null) {
-            throw new BusinessException(BusinessErrorEnum.UserNotLogin);
+            throw new BusinessException(BusinessErrorEnum.USER_NOT_LOGIN);
         }
         Long userId = (Long)subject.getPrincipal();
         userService.updateUserPersonalInfoByUserId(userId, requestVo.getNickname(),
@@ -126,12 +126,12 @@ public class UserServiceFacade {
         // TODO: 邮箱验证码
         Subject subject = SecurityUtils.getSubject();
         if (subject.getPrincipal() == null) {
-            throw new BusinessException(BusinessErrorEnum.UserNotLogin);
+            throw new BusinessException(BusinessErrorEnum.USER_NOT_LOGIN);
         }
         Long userId = (Long)subject.getPrincipal();
         User currentUser = userService.getNotDeletedUserByUserId(userId);
         if (currentUser == null) {
-            throw new BusinessException(BusinessErrorEnum.UserNotLogin);
+            throw new BusinessException(BusinessErrorEnum.USER_NOT_LOGIN);
         }
         String correctOldPassword = currentUser.getPassword();
         boolean oldPasswordCorrect = PasswordUtil.checkPasswordBcrypt(requestVo.getOldPassword(), correctOldPassword);
@@ -149,7 +149,7 @@ public class UserServiceFacade {
         } catch (AuthenticationException e) {
             // 如果报错可能是因为刚好用户被禁用或删除
             subject.logout();
-            throw new BusinessException(BusinessErrorEnum.UserNotLogin);
+            throw new BusinessException(BusinessErrorEnum.USER_NOT_LOGIN);
         }
     }
 
@@ -292,7 +292,7 @@ public class UserServiceFacade {
                 } catch (AuthenticationException e) {
                     // 如果报错可能是因为刚好用户被禁用或删除
                     subject.logout();
-                    throw new BusinessException(BusinessErrorEnum.UserNotLogin);
+                    throw new BusinessException(BusinessErrorEnum.USER_NOT_LOGIN);
                 }
             }
         }
