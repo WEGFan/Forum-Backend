@@ -3,7 +3,7 @@
  Target Server Version : 50728
  File Encoding         : 65001
 
- Date: 2020-08-13 21:11:21
+ Date: 2020-08-27 11:22:47
 */
 
 CREATE USER IF NOT EXISTS 'forum'@'localhost' IDENTIFIED BY 'forum.%{^_%u<_l,mQnUbyXYwr0QvU:,FHBJ,6"Xg7ff^19Mc<tcCGS2p!ia@F52Gpw3%mUt,1A_*w~3dOd#A';
@@ -85,8 +85,9 @@ CREATE TABLE `board_admin`
 (
     `user_id` bigint(20) UNSIGNED NOT NULL COMMENT '用户编号',
     `board_id` bigint(20) UNSIGNED NOT NULL COMMENT '板块编号',
-    PRIMARY KEY (`user_id`) USING BTREE,
+    UNIQUE INDEX `board_admin_ux_board_id_user_id` (`user_id`, `board_id`) USING BTREE,
     INDEX `board_admin_ibfk_board_id` (`board_id`) USING BTREE,
+    INDEX `board_admin_ibfk_user_id` (`user_id`) USING BTREE,
     CONSTRAINT `board_admin_ibfk_board_id` FOREIGN KEY (`board_id`) REFERENCES `board` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `board_admin_ibfk_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB
@@ -131,8 +132,9 @@ CREATE TABLE `category_admin`
 (
     `user_id` bigint(20) UNSIGNED NOT NULL COMMENT '用户编号',
     `category_id` bigint(20) UNSIGNED NOT NULL COMMENT '分区编号',
-    PRIMARY KEY (`user_id`) USING BTREE,
     INDEX `category_admin_ibfk_category_id` (`category_id`) USING BTREE,
+    INDEX `category_admin_ux_user_id_category_id` (`user_id`, `category_id`) USING BTREE,
+    INDEX `category_admin_ibfk_user_id` (`user_id`) USING BTREE,
     CONSTRAINT `category_admin_ibfk_category_id` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `category_admin_ibfk_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB
@@ -203,6 +205,7 @@ CREATE TABLE `operation_log`
 DROP TABLE IF EXISTS `permission`;
 CREATE TABLE `permission`
 (
+    `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
     `user_id` bigint(20) UNSIGNED NULL DEFAULT NULL COMMENT '用户编号',
     `board_id` bigint(20) UNSIGNED NULL DEFAULT NULL COMMENT '板块编号',
     `ban_visit` tinyint(1) UNSIGNED NOT NULL COMMENT '禁止访问',
@@ -210,11 +213,13 @@ CREATE TABLE `permission`
     `ban_reply` tinyint(1) UNSIGNED NOT NULL COMMENT '禁止回复',
     `ban_upload_attachment` tinyint(1) UNSIGNED NOT NULL COMMENT '禁止上传附件',
     `ban_download_attachment` tinyint(1) UNSIGNED NOT NULL COMMENT '禁止下载附件',
+    PRIMARY KEY (`id`) USING BTREE,
     INDEX `permission_ibfk_user_id` (`user_id`) USING BTREE,
     INDEX `permission_ibfk_board_id` (`board_id`) USING BTREE,
     CONSTRAINT `permission_ibfk_board_id` FOREIGN KEY (`board_id`) REFERENCES `board` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `permission_ibfk_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB
+  AUTO_INCREMENT = 1
   CHARACTER SET = utf8mb4
   COLLATE = utf8mb4_general_ci COMMENT = '权限表（用户论坛权限、用户板块权限、板块内普通用户权限）'
   ROW_FORMAT = DYNAMIC;
@@ -346,7 +351,7 @@ CREATE TABLE `user`
     `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '邮箱',
     `email_verified` tinyint(1) UNSIGNED NOT NULL COMMENT '是否已激活邮箱',
     `sex` tinyint(4) UNSIGNED NOT NULL COMMENT '性别 0-男 1-女 2-保密',
-    `signature` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '个人签名 最大500字符',
+    `signature` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '个人签名 最大500字符',
     `super_board_admin` tinyint(1) UNSIGNED NOT NULL COMMENT '是否为超级版主',
     `admin` tinyint(1) UNSIGNED NOT NULL COMMENT '是否为管理员',
     `avatar_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '头像文件地址',
