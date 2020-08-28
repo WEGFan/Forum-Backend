@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -103,7 +104,7 @@ public class GlobalExceptionHandler {
     /**
      * 处理 GET 参数校验失败
      */
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ExceptionHandler({MethodArgumentTypeMismatchException.class, MissingServletRequestParameterException.class})
     public ResultVo handleNumberFormatException(MethodArgumentTypeMismatchException e) {
         log.warn("<{}> GET参数校验失败：{}", request.getRequestURI(), e.getMessage());
         return ResultVo.error(400, "搜索条件不合法");
