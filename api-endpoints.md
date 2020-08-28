@@ -1604,7 +1604,7 @@ null
         "boardAdmin": [ // 版主（不包括分区版主）
             {
                 "id": 1, // 用户编号
-                "username": "aa" // 用户名
+                "name": "aa" // 用户名
             }
         ],
         "createTime": "2020-08-08 01:11:11", // 创建时间
@@ -1772,15 +1772,15 @@ null
 ```json5
 [
     {
-        "id": 1, // 板块编号
-        "name": "a", // 板块名称
+        "id": 1, // 分区编号
+        "name": "a", // 分区名称
         "description": "a", // 描述
         "visible": true, // 是否可见
         "order": 1, // 显示顺序
         "categoryAdmin": [ // 分区版主
             {
                 "id": 1, // 用户编号
-                "username": "aa" // 用户名
+                "name": "aa" // 用户名
             }
         ],
         "createTime": "2020-08-08 01:11:11", // 创建时间
