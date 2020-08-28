@@ -115,10 +115,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public Page<User> listNotDeletedUsersByPageAndUsernameAndType(Page<?> page, UserTypeEnum userType, String username) {
-        username = username.trim();
         if (StringUtils.isEmpty(username)) {
             username = null;
         } else {
+            username = username.trim();
             username = EscapeUtil.escapeSqlLike(username);
         }
 
