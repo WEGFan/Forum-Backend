@@ -2,6 +2,7 @@ package cn.wegfan.forum.mapper;
 
 import cn.wegfan.forum.model.entity.Board;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,8 +18,12 @@ public interface BoardMapper extends BaseMapper<Board> {
 
     int deleteByBoardId(Long boardId);
 
-    List<Board> selectNotDeletedAdminBoardListByUserId(Long userId);
+    List<Board> selectNotDeletedAdminBoardListWithBoardAdminByUserId(Long userId);
 
     boolean checkBoardAdminByUserIdAndBoardId(Long userId, Long boardId);
+
+    Page<Board> selectNotDeletedBoardListByPage(Page<?> page, String orderBy);
+
+    Page<Board> selectNotDeletedAdminBoardListWithBoardCategoryAdminByUserId(Page<?> page, Long userId, String orderBy);
 
 }

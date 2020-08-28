@@ -1,8 +1,12 @@
 package cn.wegfan.forum.service;
 
+import cn.wegfan.forum.constant.BoardListSortEnum;
 import cn.wegfan.forum.mapper.BoardMapper;
+import cn.wegfan.forum.mapper.UserMapper;
 import cn.wegfan.forum.model.entity.Board;
+import cn.wegfan.forum.model.entity.User;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -28,6 +32,9 @@ public class BoardServiceImpl extends ServiceImpl<BoardMapper, Board> implements
 
     @Autowired
     private BoardMapper boardMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
     @Cacheable(key = "'notDeletedIdList'")
@@ -71,8 +78,8 @@ public class BoardServiceImpl extends ServiceImpl<BoardMapper, Board> implements
     }
 
     @Override
-    public List<Board> listNotDeletedAdminBoardsByUserId(Long userId) {
-        return boardMapper.selectNotDeletedAdminBoardListByUserId(userId);
+    public List<Board> listNotDeletedAdminBoardsWithBoardAdminByUserId(Long userId) {
+        return boardMapper.selectNotDeletedAdminBoardListWithBoardAdminByUserId(userId);
     }
 
     @Override
@@ -87,6 +94,24 @@ public class BoardServiceImpl extends ServiceImpl<BoardMapper, Board> implements
     @Override
     public boolean checkBoardAdminByUserIdAndBoardId(Long userId, Long boardId) {
         return boardMapper.checkBoardAdminByUserIdAndBoardId(userId, boardId);
+    }
+
+    @Override
+    public Page<Board> listNotDeletedBoardsByPage(Page<?> page, BoardListSortEnum sortEnum) {
+        return boardMapper.selectNotDeletedBoardListByPage(page, sortEnum.getOrderBySql());
+    }
+
+    @Override
+    public Page<Board> listNotDeletedAdminBoardsWithBoardCategoryAdminByPageAndUserId(Page<?> page, Long userId,
+                                                                                      BoardListSortEnum sortEnum) {
+        User user = userMapper.selectNotDeletedByUserId(userId);
+        // 如果管理员或超级版主则直接获取所有分区
+        if (user.getAdmin() || user.getSuperBoardAdmin()) {
+            return boardMapper.selectNotDeletedBoardListByPage(page, sortEnum.getOrderBySql());
+        } else {
+            return boardMapper.selectNotDeletedAdminBoardListWithBoardCategoryAdminByUserId(page, userId,
+                    sortEnum.getOrderBySql());
+        }
     }
 
 }

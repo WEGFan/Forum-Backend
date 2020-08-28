@@ -168,4 +168,13 @@
           AND user.id = category_admin.user_id
           AND category_admin.category_id = #{categoryId}
     </select>
+
+    <select id="selectNotDeletedBoardAdminListByBoardId" resultType="User">
+        SELECT *
+        FROM user,
+             board_admin
+        WHERE delete_time IS NULL
+          AND user.id = board_admin.user_id
+          AND board_admin.board_id = #{boardId}
+    </select>
 </mapper>

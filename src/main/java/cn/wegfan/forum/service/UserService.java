@@ -39,4 +39,6 @@ public interface UserService extends IService<User> {
 
     List<User> listNotDeletedCategoryAdminsByCategoryId(Long categoryId);
 
+    List<User> listNotDeletedBoardAdminsByBoardId(Long boardId);
+
 }

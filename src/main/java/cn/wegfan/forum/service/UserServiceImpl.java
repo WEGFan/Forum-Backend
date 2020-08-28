@@ -155,4 +155,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return userMapper.selectNotDeletedCategoryAdminListByCategoryId(categoryId);
     }
 
+    @Override
+    public List<User> listNotDeletedBoardAdminsByBoardId(Long boardId) {
+        return userMapper.selectNotDeletedBoardAdminListByBoardId(boardId);
+    }
+
 }

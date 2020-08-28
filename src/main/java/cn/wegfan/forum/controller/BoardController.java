@@ -1,5 +1,6 @@
 package cn.wegfan.forum.controller;
 
+import cn.wegfan.forum.constant.BoardListSortEnum;
 import cn.wegfan.forum.constant.BusinessErrorEnum;
 import cn.wegfan.forum.model.vo.request.AddBoardRequestVo;
 import cn.wegfan.forum.model.vo.request.IdRequestVo;
@@ -7,6 +8,7 @@ import cn.wegfan.forum.model.vo.request.UpdateBoardRequestVo;
 import cn.wegfan.forum.model.vo.response.ResultVo;
 import cn.wegfan.forum.service.BoardServiceFacade;
 import cn.wegfan.forum.util.BusinessException;
+import cn.wegfan.forum.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +31,12 @@ public class BoardController {
      * 【管理】查看所有板块
      */
     @GetMapping("board-list")
-    public ResultVo getBoardList(@RequestParam Integer page,
-                                 @RequestParam Integer count) {
-        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
+    public ResultVo getBoardList(@RequestParam(required = false) String sort,
+                                 @RequestParam Long page,
+                                 @RequestParam Long count) {
+        count = PaginationUtil.clampPageSize(count);
+        BoardListSortEnum sortEnum = BoardListSortEnum.fromValue(sort, BoardListSortEnum.ID);
+        return ResultVo.success(boardServiceFacade.getAdminBoardList(sortEnum, page, count));
     }
 
     /**
