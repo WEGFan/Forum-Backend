@@ -26,6 +26,8 @@ public enum BusinessErrorEnum {
     CANT_DELETE_OWN_ACCOUNT(10008, "不能删除自己的帐号"),
     USER_NOT_FOUND(10009, "用户不存在"),
     DUPLICATE_EMAIL(10010, "邮箱已被使用"),
+    CANT_SET_OWN_ACCOUNT_ADMIN(10011, "不能取消自己帐号的管理员"),
+    CANT_SET_OWN_ACCOUNT_BAN_LOGIN(10012, "不能设置自己帐号禁止登录"),
     UPLOAD_FILE_TOO_LARGE(10018, "上传的文件过大");
 
     /**

@@ -226,6 +226,11 @@ public class UserServiceFacade {
             throw new BusinessException(BusinessErrorEnum.USER_NOT_FOUND);
         }
 
+        if (requestVo.getUserId().equals(SecurityUtils.getSubject().getPrincipal()) &&
+                requestVo.getBanVisit()) {
+            throw new BusinessException(BusinessErrorEnum.CANT_SET_OWN_ACCOUNT_BAN_LOGIN);
+        }
+
         Permission permission = mapperFacade.map(requestVo, Permission.class);
         permissionService.addOrUpdateForumPermission(permission);
     }
@@ -256,6 +261,9 @@ public class UserServiceFacade {
         User sameEmailUser = userService.getNotDeletedUserByEmail(requestVo.getEmail());
         if (sameEmailUser != null && !sameEmailUser.getId().equals(user.getId())) {
             throw new BusinessException(BusinessErrorEnum.DUPLICATE_EMAIL);
+        }
+        if (!requestVo.getAdmin()) {
+            throw new BusinessException(BusinessErrorEnum.CANT_SET_OWN_ACCOUNT_ADMIN);
         }
 
         boolean isRefreshSessionNeeded = !requestVo.getUsername().equals(user.getUsername()) ||
