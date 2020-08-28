@@ -12,7 +12,7 @@ public interface CategoryMapper extends BaseMapper<Category> {
 
     List<Long> selectNotDeletedCategoryIdList();
 
-    Page<Category> selectNotDeletedCategoryListByPage(Page<?> page);
+    Page<Category> selectNotDeletedCategoryListByPage(Page<?> page, String orderBy);
 
     Category selectNotDeletedByName(String name);
 
@@ -20,6 +20,6 @@ public interface CategoryMapper extends BaseMapper<Category> {
 
     int deleteByCategoryId(Long categoryId);
 
-    Page<Category> selectNotDeletedAdminCategoryListByUserId(Page<?> page, Long userId);
+    Page<Category> selectNotDeletedAdminCategoryListByPageAndUserId(Page<?> page, Long userId, String orderBy);
 
 }

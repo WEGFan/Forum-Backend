@@ -1,5 +1,6 @@
 package cn.wegfan.forum.service;
 
+import cn.wegfan.forum.constant.CategoryListSortEnum;
 import cn.wegfan.forum.model.entity.Category;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -10,9 +11,9 @@ public interface CategoryService extends IService<Category> {
 
     List<Long> listNotDeletedCategoryIds();
 
-    Page<Category> listNotDeletedCategoriesByPage(Page<?> page);
+    Page<Category> listNotDeletedCategoriesByPage(Page<?> page, CategoryListSortEnum sortEnum);
 
-    List<Category> listNotDeletedCategories();
+    List<Category> listNotDeletedCategories(CategoryListSortEnum sortEnum);
 
     Category getNotDeletedCategoryByCategoryId(Long categoryId);
 
@@ -24,8 +25,8 @@ public interface CategoryService extends IService<Category> {
 
     int deleteCategoryByCategoryId(Long categoryId);
 
-    List<Category> listNotDeletedAdminCategoriesByUserId(Long userId);
+    List<Category> listNotDeletedAdminCategoriesByUserId(Long userId, CategoryListSortEnum sortEnum);
 
-    Page<Category> listNotDeletedAdminCategoriesByPageAndUserId(Page<?> page, Long userId);
+    Page<Category> listNotDeletedAdminCategoriesByPageAndUserId(Page<?> page, Long userId, CategoryListSortEnum sortEnum);
 
 }

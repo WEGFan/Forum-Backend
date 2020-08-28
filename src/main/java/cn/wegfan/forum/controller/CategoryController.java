@@ -1,5 +1,6 @@
 package cn.wegfan.forum.controller;
 
+import cn.wegfan.forum.constant.CategoryListSortEnum;
 import cn.wegfan.forum.model.vo.request.CategoryRequestVo;
 import cn.wegfan.forum.model.vo.request.IdRequestVo;
 import cn.wegfan.forum.model.vo.response.ResultVo;
@@ -27,10 +28,12 @@ public class CategoryController {
      * 【管理】查看所有分区
      */
     @GetMapping("category-list")
-    public ResultVo getCategoryList(@RequestParam Long page,
+    public ResultVo getCategoryList(@RequestParam(required = false) String sort,
+                                    @RequestParam Long page,
                                     @RequestParam Long count) {
         count = PaginationUtil.clampPageSize(count);
-        return ResultVo.success(categoryServiceFacade.getAdminCategoryList(page, count));
+        CategoryListSortEnum sortEnum = CategoryListSortEnum.fromValue(sort, CategoryListSortEnum.ID);
+        return ResultVo.success(categoryServiceFacade.getAdminCategoryList(sortEnum, page, count));
     }
 
     /**

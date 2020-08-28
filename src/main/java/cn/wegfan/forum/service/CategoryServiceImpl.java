@@ -1,5 +1,6 @@
 package cn.wegfan.forum.service;
 
+import cn.wegfan.forum.constant.CategoryListSortEnum;
 import cn.wegfan.forum.constant.Constant;
 import cn.wegfan.forum.mapper.CategoryMapper;
 import cn.wegfan.forum.mapper.UserMapper;
@@ -41,13 +42,13 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     }
 
     @Override
-    public Page<Category> listNotDeletedCategoriesByPage(Page<?> page) {
-        return categoryMapper.selectNotDeletedCategoryListByPage(page);
+    public Page<Category> listNotDeletedCategoriesByPage(Page<?> page, CategoryListSortEnum sortEnum) {
+        return categoryMapper.selectNotDeletedCategoryListByPage(page, sortEnum.getOrderBySql());
     }
 
     @Override
-    public List<Category> listNotDeletedCategories() {
-        return categoryMapper.selectNotDeletedCategoryListByPage(Constant.UNPAGED_PAGE).getRecords();
+    public List<Category> listNotDeletedCategories(CategoryListSortEnum sortEnum) {
+        return categoryMapper.selectNotDeletedCategoryListByPage(Constant.UNPAGED_PAGE, sortEnum.getOrderBySql()).getRecords();
     }
 
     @Override
@@ -87,18 +88,18 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     }
 
     @Override
-    public List<Category> listNotDeletedAdminCategoriesByUserId(Long userId) {
-        return listNotDeletedAdminCategoriesByPageAndUserId(Constant.UNPAGED_PAGE, userId).getRecords();
+    public List<Category> listNotDeletedAdminCategoriesByUserId(Long userId, CategoryListSortEnum sortEnum) {
+        return listNotDeletedAdminCategoriesByPageAndUserId(Constant.UNPAGED_PAGE, userId, sortEnum).getRecords();
     }
 
     @Override
-    public Page<Category> listNotDeletedAdminCategoriesByPageAndUserId(Page<?> page, Long userId) {
+    public Page<Category> listNotDeletedAdminCategoriesByPageAndUserId(Page<?> page, Long userId, CategoryListSortEnum sortEnum) {
         User user = userMapper.selectNotDeletedByUserId(userId);
         // 如果管理员或超级版主则直接获取所有分区
         if (user.getAdmin() || user.getSuperBoardAdmin()) {
-            return categoryMapper.selectNotDeletedCategoryListByPage(page);
+            return categoryMapper.selectNotDeletedCategoryListByPage(page, sortEnum.getOrderBySql());
         } else {
-            return categoryMapper.selectNotDeletedAdminCategoryListByUserId(page, userId);
+            return categoryMapper.selectNotDeletedAdminCategoryListByPageAndUserId(page, userId, sortEnum.getOrderBySql());
         }
     }
 

@@ -28,18 +28,20 @@
         WHERE id = #{categoryId}
     </delete>
 
-    <select id="selectNotDeletedAdminCategoryListByUserId" resultType="Category">
+    <select id="selectNotDeletedAdminCategoryListByPageAndUserId" resultType="Category">
         SELECT category.*
         FROM category,
              category_admin
         WHERE category.id = category_admin.category_id
           AND category_admin.user_id = #{userId}
           AND delete_time IS NULL
+        ORDER BY ${orderBy}
     </select>
 
     <select id="selectNotDeletedCategoryListByPage" resultType="Category">
         SELECT *
         FROM category
         WHERE delete_time IS NULL
+        ORDER BY ${orderBy}
     </select>
 </mapper>

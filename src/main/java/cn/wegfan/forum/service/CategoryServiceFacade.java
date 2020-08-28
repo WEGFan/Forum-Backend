@@ -1,6 +1,7 @@
 package cn.wegfan.forum.service;
 
 import cn.wegfan.forum.constant.BusinessErrorEnum;
+import cn.wegfan.forum.constant.CategoryListSortEnum;
 import cn.wegfan.forum.model.entity.Category;
 import cn.wegfan.forum.model.entity.User;
 import cn.wegfan.forum.model.vo.request.CategoryRequestVo;
@@ -30,11 +31,11 @@ public class CategoryServiceFacade {
     @Autowired
     private UserService userService;
 
-    public PageResultVo<CategoryResponseVo> getAdminCategoryList(long pageIndex, long pageSize) {
+    public PageResultVo<CategoryResponseVo> getAdminCategoryList(CategoryListSortEnum sortEnum, long pageIndex, long pageSize) {
         Long userId = (Long)SecurityUtils.getSubject().getPrincipal();
 
         Page<?> page = new Page<>(pageIndex, pageSize);
-        Page<Category> pageResult = categoryService.listNotDeletedAdminCategoriesByPageAndUserId(page, userId);
+        Page<Category> pageResult = categoryService.listNotDeletedAdminCategoriesByPageAndUserId(page, userId, sortEnum);
 
         List<CategoryResponseVo> responseVoList = mapperFacade.mapAsList(pageResult.getRecords(), CategoryResponseVo.class);
         responseVoList.forEach(item -> {
@@ -49,7 +50,7 @@ public class CategoryServiceFacade {
     public List<IdNameResponseVo> getAdminCategoryNameList() {
         Long userId = (Long)SecurityUtils.getSubject().getPrincipal();
 
-        List<Category> categoryList = categoryService.listNotDeletedAdminCategoriesByUserId(userId);
+        List<Category> categoryList = categoryService.listNotDeletedAdminCategoriesByUserId(userId, CategoryListSortEnum.ORDER);
         List<IdNameResponseVo> responseVoList = mapperFacade.mapAsList(categoryList, IdNameResponseVo.class);
         return responseVoList;
     }
