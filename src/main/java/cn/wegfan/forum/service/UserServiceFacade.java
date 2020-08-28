@@ -90,10 +90,6 @@ public class UserServiceFacade {
 
     public void logout() {
         Subject subject = SecurityUtils.getSubject();
-        // 如果用户本身未登录
-        if (subject.getPrincipal() == null) {
-            throw new BusinessException(BusinessErrorEnum.USER_NOT_LOGIN);
-        }
         subject.logout();
     }
 
