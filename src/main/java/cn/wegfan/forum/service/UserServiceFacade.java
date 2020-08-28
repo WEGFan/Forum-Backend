@@ -59,7 +59,10 @@ public class UserServiceFacade {
         if (user == null) {
             throw new BusinessException(BusinessErrorEnum.WRONG_USERNAME_OR_PASSWORD);
         }
-        // TODO: 判断帐号是否被禁止登录
+        Permission forumPermission = permissionService.getForumPermissionByUserId(user.getId());
+        if (forumPermission.getBanVisit()) {
+            throw new BusinessException(BusinessErrorEnum.ACCOUNT_DISABLED);
+        }
 
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken(user.getId().toString(), requestVo.getPassword());
