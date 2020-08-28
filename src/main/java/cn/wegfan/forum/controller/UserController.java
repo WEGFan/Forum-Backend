@@ -184,22 +184,6 @@ public class UserController {
     }
 
     /**
-     * 【管理】添加超级版主
-     */
-    @PostMapping("add-super-board-admin")
-    public ResultVo addSuperBoardAdmin() {
-        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
-    }
-
-    /**
-     * 【管理】删除超级版主
-     */
-    @PostMapping("delete-super-board-admin")
-    public ResultVo deleteSuperBoardAdmin() {
-        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
-    }
-
-    /**
      * 【管理】修改用户的论坛权限
      */
     @PostMapping("update-forum-permission")

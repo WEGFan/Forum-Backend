@@ -68,6 +68,12 @@ public class UpdateUserInfoRequestVo implements Serializable {
     private String signature;
 
     /**
+     * 是否为超级版主
+     */
+    @NotNull
+    private Boolean superBoardAdmin;
+
+    /**
      * 是否为管理员
      */
     @NotNull
