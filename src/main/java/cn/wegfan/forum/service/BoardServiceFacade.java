@@ -2,6 +2,7 @@ package cn.wegfan.forum.service;
 
 import cn.wegfan.forum.constant.BusinessErrorEnum;
 import cn.wegfan.forum.model.entity.Board;
+import cn.wegfan.forum.model.entity.Permission;
 import cn.wegfan.forum.model.vo.request.AddBoardRequestVo;
 import cn.wegfan.forum.model.vo.request.UpdateBoardRequestVo;
 import cn.wegfan.forum.util.BusinessException;
@@ -23,18 +24,25 @@ public class BoardServiceFacade {
     @Autowired
     private BoardAdminService boardAdminService;
 
+    @Autowired
+    private PermissionService permissionService;
+
     public int addBoard(AddBoardRequestVo requestVo) {
-        // TODO: 板块权限
         Board sameNameBoard = boardService.getNotDeletedBoardByNameAndCategoryId(requestVo.getName(), requestVo.getCategoryId());
         if (sameNameBoard != null) {
             throw new BusinessException(BusinessErrorEnum.DUPLICATE_BOARD_NAME);
         }
+
         Board board = mapperFacade.map(requestVo, Board.class);
-        return boardService.addBoard(board);
+        Permission boardPermission = mapperFacade.map(requestVo.getBoardPermission(), Permission.class);
+
+        int result = boardService.addBoard(board);
+        boardPermission.setBoardId(board.getId());
+        permissionService.addOrUpdateBoardPermission(boardPermission);
+        return result;
     }
 
     public int updateBoard(UpdateBoardRequestVo requestVo) {
-        // TODO: 板块权限
         Board board = boardService.getNotDeletedBoardByBoardId(requestVo.getId());
         if (board == null) {
             throw new BusinessException(BusinessErrorEnum.BOARD_NOT_FOUND);
@@ -43,8 +51,14 @@ public class BoardServiceFacade {
         if (sameNameBoard != null && !sameNameBoard.getId().equals(board.getId())) {
             throw new BusinessException(BusinessErrorEnum.DUPLICATE_BOARD_NAME);
         }
+
         mapperFacade.map(requestVo, board);
-        return boardService.updateBoard(board);
+        Permission boardPermission = mapperFacade.map(requestVo.getBoardPermission(), Permission.class);
+
+        int result = boardService.updateBoard(board);
+        boardPermission.setBoardId(requestVo.getId());
+        permissionService.addOrUpdateBoardPermission(boardPermission);
+        return result;
     }
 
     public int deleteBoard(Long boardId) {

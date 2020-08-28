@@ -49,4 +49,10 @@ public class UpdateBoardRequestVo implements Serializable {
     @Range(min = 1, max = 100)
     private Integer order;
 
+    /**
+     * 普通会员在本版块的权限
+     */
+    @NotNull
+    private PermissionRequestVo boardPermission;
+
 }
