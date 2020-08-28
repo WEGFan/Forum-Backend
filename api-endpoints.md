@@ -1533,6 +1533,7 @@ null
 ```json5
 {
     "id": 1, // 附件编号
+    "filename": "a.exe", // 文件名
     "downloadUrl": "/api/file/attachment/a.exe" // 下载链接
 }
 ```
