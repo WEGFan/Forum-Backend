@@ -1,7 +1,11 @@
 package cn.wegfan.forum.service;
 
+import cn.wegfan.forum.constant.Constant;
 import cn.wegfan.forum.mapper.CategoryMapper;
+import cn.wegfan.forum.mapper.UserMapper;
 import cn.wegfan.forum.model.entity.Category;
+import cn.wegfan.forum.model.entity.User;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -27,10 +31,23 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     @Autowired
     private CategoryMapper categoryMapper;
 
+    @Autowired
+    private UserMapper userMapper;
+
     @Override
     @Cacheable(key = "'notDeletedIdList'")
     public List<Long> listNotDeletedCategoryIds() {
         return categoryMapper.selectNotDeletedCategoryIdList();
+    }
+
+    @Override
+    public Page<Category> listNotDeletedCategoriesByPage(Page<?> page) {
+        return categoryMapper.selectNotDeletedCategoryListByPage(page);
+    }
+
+    @Override
+    public List<Category> listNotDeletedCategories() {
+        return categoryMapper.selectNotDeletedCategoryListByPage(Constant.UNPAGED_PAGE).getRecords();
     }
 
     @Override
@@ -71,7 +88,18 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
 
     @Override
     public List<Category> listNotDeletedAdminCategoriesByUserId(Long userId) {
-        return categoryMapper.selectNotDeletedAdminCategoryListByUserId(userId);
+        return listNotDeletedAdminCategoriesByPageAndUserId(Constant.UNPAGED_PAGE, userId).getRecords();
+    }
+
+    @Override
+    public Page<Category> listNotDeletedAdminCategoriesByPageAndUserId(Page<?> page, Long userId) {
+        User user = userMapper.selectNotDeletedByUserId(userId);
+        // 如果管理员或超级版主则直接获取所有分区
+        if (user.getAdmin() || user.getSuperBoardAdmin()) {
+            return categoryMapper.selectNotDeletedCategoryListByPage(page);
+        } else {
+            return categoryMapper.selectNotDeletedAdminCategoryListByUserId(page, userId);
+        }
     }
 
 }

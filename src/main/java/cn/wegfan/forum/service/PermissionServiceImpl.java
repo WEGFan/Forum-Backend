@@ -33,19 +33,19 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
     private RedisTemplate<String, Object> redisTemplate;
 
     @Override
-    @Cacheable(key = "'forum:' + #userId")
+    @Cacheable(key = "'forum:' + #userId", unless = "#result == null")
     public Permission getForumPermissionByUserId(Long userId) {
         return permissionMapper.selectForumPermissionByUserId(userId);
     }
 
     @Override
-    @Cacheable(key = "'board:' + #boardId")
+    @Cacheable(key = "'board:' + #boardId", unless = "#result == null")
     public Permission getBoardPermissionByBoardId(Long boardId) {
         return permissionMapper.selectBoardPermissionByBoardId(boardId);
     }
 
     @Override
-    @Cacheable(key = "'userBoard:' + #userId + '_' + #boardId")
+    @Cacheable(key = "'userBoard:' + #userId + '_' + #boardId", unless = "#result == null")
     public Permission getUserBoardPermissionByUserIdAndBoardId(Long userId, Long boardId) {
         return permissionMapper.selectUserBoardPermissionByUserIdAndBoardId(userId, boardId);
     }

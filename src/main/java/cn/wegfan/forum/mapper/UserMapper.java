@@ -44,4 +44,5 @@ public interface UserMapper extends BaseMapper<User> {
 
     Page<User> selectNotDeletedBanCreateTopicAndReplyListByPageAndUsername(Page<?> page, String username);
 
+    List<User> selectNotDeletedCategoryAdminListByCategoryId(Long categoryId);
 }

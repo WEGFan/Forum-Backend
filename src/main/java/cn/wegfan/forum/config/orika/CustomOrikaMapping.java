@@ -1,6 +1,7 @@
 package cn.wegfan.forum.config.orika;
 
 import cn.wegfan.forum.model.entity.User;
+import cn.wegfan.forum.model.vo.response.IdNameResponseVo;
 import cn.wegfan.forum.model.vo.response.UserSearchResponseVo;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
@@ -23,6 +24,11 @@ public class CustomOrikaMapping implements OrikaMapperFactoryConfigurer {
                         userSearchResponseVo.setDeleted(user.getDeleteTime() != null);
                     }
                 })
+                .register();
+
+        mapperFactory.classMap(User.class, IdNameResponseVo.class)
+                .fieldMap("username", "name").add()
+                .byDefault()
                 .register();
     }
 

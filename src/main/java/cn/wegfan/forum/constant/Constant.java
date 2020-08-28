@@ -1,5 +1,7 @@
 package cn.wegfan.forum.constant;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+
 public class Constant {
 
     /**
@@ -16,5 +18,10 @@ public class Constant {
      * 最大分页大小
      */
     public static final long MAX_PAGE_SIZE = 20;
+
+    /**
+     * 不分页的分页对象
+     */
+    public static final Page<?> UNPAGED_PAGE = new Page<>(1, -1);
 
 }

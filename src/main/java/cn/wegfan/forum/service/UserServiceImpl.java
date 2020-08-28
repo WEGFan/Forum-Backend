@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Autowired
     private MapperFacade mapperFacade;
+
+    @Override
+    public User getCurrentLoginUser() {
+        Long userId = (Long)SecurityUtils.getSubject().getPrincipal();
+        return userMapper.selectNotDeletedByUserId(userId);
+    }
 
     @Override
     public User getNotDeletedUserByUserId(Long userId) {
@@ -141,6 +148,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             default:
                 return userMapper.selectNotDeletedUserListByPageAndUsername(page, username);
         }
+    }
+
+    @Override
+    public List<User> listNotDeletedCategoryAdminsByCategoryId(Long categoryId) {
+        return userMapper.selectNotDeletedCategoryAdminListByCategoryId(categoryId);
     }
 
 }

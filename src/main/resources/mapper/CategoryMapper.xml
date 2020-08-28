@@ -36,4 +36,10 @@
           AND category_admin.user_id = #{userId}
           AND delete_time IS NULL
     </select>
+
+    <select id="selectNotDeletedCategoryListByPage" resultType="Category">
+        SELECT *
+        FROM category
+        WHERE delete_time IS NULL
+    </select>
 </mapper>

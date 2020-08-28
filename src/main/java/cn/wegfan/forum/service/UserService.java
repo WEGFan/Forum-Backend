@@ -11,12 +11,14 @@ import java.util.List;
 
 public interface UserService extends IService<User> {
 
+    User getCurrentLoginUser();
+
     User getNotDeletedUserByUserId(Long userId);
 
     User getNotDeletedUserByUsername(String username);
 
     User getNotDeletedUserByEmail(String email);
-    
+
     int updateUserLoginTimeAndIpByUserId(Long userId, Date loginTime, String loginIp);
 
     int addUserByRegister(User user);
@@ -34,5 +36,7 @@ public interface UserService extends IService<User> {
     int updateUser(User user);
 
     Page<User> listNotDeletedUsersByPageAndUsernameAndType(Page<?> page, UserTypeEnum userType, String username);
+
+    List<User> listNotDeletedCategoryAdminsByCategoryId(Long categoryId);
 
 }

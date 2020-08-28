@@ -1,11 +1,10 @@
 package cn.wegfan.forum.controller;
 
-import cn.wegfan.forum.constant.BusinessErrorEnum;
 import cn.wegfan.forum.model.vo.request.CategoryRequestVo;
 import cn.wegfan.forum.model.vo.request.IdRequestVo;
 import cn.wegfan.forum.model.vo.response.ResultVo;
 import cn.wegfan.forum.service.CategoryServiceFacade;
-import cn.wegfan.forum.util.BusinessException;
+import cn.wegfan.forum.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +27,10 @@ public class CategoryController {
      * 【管理】查看所有分区
      */
     @GetMapping("category-list")
-    public ResultVo getCategoryList(@RequestParam Integer page,
-                                    @RequestParam Integer count) {
-        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
+    public ResultVo getCategoryList(@RequestParam Long page,
+                                    @RequestParam Long count) {
+        count = PaginationUtil.clampPageSize(count);
+        return ResultVo.success(categoryServiceFacade.getAdminCategoryList(page, count));
     }
 
     /**
@@ -38,7 +38,7 @@ public class CategoryController {
      */
     @GetMapping("category-name-list")
     public ResultVo getCategoryNameList() {
-        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
+        return ResultVo.success(categoryServiceFacade.getAdminCategoryNameList());
     }
 
     /**

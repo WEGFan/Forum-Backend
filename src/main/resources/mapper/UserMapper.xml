@@ -159,4 +159,13 @@
         WHERE delete_time IS NULL
           AND email = #{email}
     </select>
+
+    <select id="selectNotDeletedCategoryAdminListByCategoryId" resultType="User">
+        SELECT user.*
+        FROM user,
+             category_admin
+        WHERE delete_time IS NULL
+          AND user.id = category_admin.user_id
+          AND category_admin.category_id = #{categoryId}
+    </select>
 </mapper>
