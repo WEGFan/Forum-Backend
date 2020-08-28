@@ -1,6 +1,7 @@
 package cn.wegfan.forum.service;
 
 import cn.wegfan.forum.constant.BusinessErrorEnum;
+import cn.wegfan.forum.constant.CategoryListSortEnum;
 import cn.wegfan.forum.constant.SexEnum;
 import cn.wegfan.forum.constant.UserTypeEnum;
 import cn.wegfan.forum.model.entity.Board;
@@ -321,8 +322,8 @@ public class UserServiceFacade {
             responseVo.setEmailVerified(null);
         }
 
-        List<Board> boardAdminList = boardService.listNotDeletedAdminBoardsByUserId(userId);
-        List<Category> categoryAdminList = categoryService.listNotDeletedAdminCategoriesByUserId(userId);
+        List<Board> boardAdminList = boardService.listNotDeletedAdminBoardsWithBoardAdminByUserId(userId);
+        List<Category> categoryAdminList = categoryService.listNotDeletedAdminCategoriesByUserId(userId, CategoryListSortEnum.ID);
 
         responseVo.setBoardAdmin(mapperFacade.mapAsList(boardAdminList, IdNameResponseVo.class));
         responseVo.setCategoryAdmin(mapperFacade.mapAsList(categoryAdminList, IdNameResponseVo.class));
@@ -352,10 +353,8 @@ public class UserServiceFacade {
         permissionService.addOrUpdateForumPermission(forumPermission);
     }
 
-    public PageResultVo<UserResponseVo> getUserList(String username, String userType, long pageIndex, long pageSize) {
+    public PageResultVo<UserResponseVo> getUserList(String username, UserTypeEnum userTypeEnum, long pageIndex, long pageSize) {
         Page<User> page = new Page<>(pageIndex, pageSize);
-
-        UserTypeEnum userTypeEnum = UserTypeEnum.fromValue(userType, UserTypeEnum.ALL);
         Page<User> pageResult = userService.listNotDeletedUsersByPageAndUsernameAndType(page, userTypeEnum, username);
 
         List<UserResponseVo> responseVoList = mapperFacade.mapAsList(pageResult.getRecords(), UserResponseVo.class);
@@ -364,8 +363,8 @@ public class UserServiceFacade {
             Long userId = item.getId();
 
             // 设置版主和分区版主
-            List<Board> boardAdminList = boardService.listNotDeletedAdminBoardsByUserId(userId);
-            List<Category> categoryAdminList = categoryService.listNotDeletedAdminCategoriesByUserId(userId);
+            List<Board> boardAdminList = boardService.listNotDeletedAdminBoardsWithBoardAdminByUserId(userId);
+            List<Category> categoryAdminList = categoryService.listNotDeletedAdminCategoriesByUserId(userId, CategoryListSortEnum.ID);
 
             item.setBoardAdmin(mapperFacade.mapAsList(boardAdminList, IdNameResponseVo.class));
             item.setCategoryAdmin(mapperFacade.mapAsList(categoryAdminList, IdNameResponseVo.class));

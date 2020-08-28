@@ -1,6 +1,7 @@
 package cn.wegfan.forum.controller;
 
 import cn.wegfan.forum.constant.BusinessErrorEnum;
+import cn.wegfan.forum.constant.UserTypeEnum;
 import cn.wegfan.forum.model.vo.request.*;
 import cn.wegfan.forum.model.vo.response.ResultVo;
 import cn.wegfan.forum.service.UserServiceFacade;
@@ -136,7 +137,8 @@ public class UserController {
                                 @RequestParam Long page,
                                 @RequestParam Long count) {
         count = PaginationUtil.clampPageSize(count);
-        return ResultVo.success(userServiceFacade.getUserList(username, userType, page, count));
+        UserTypeEnum userTypeEnum = UserTypeEnum.fromValue(userType, UserTypeEnum.ALL);
+        return ResultVo.success(userServiceFacade.getUserList(username, userTypeEnum, page, count));
     }
 
     /**
