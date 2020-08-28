@@ -1148,9 +1148,7 @@ null
             "id": 2,
             "description": "b"
         }
-    ],
-    "verifyCode": "abcd", // 图形验证码，必填，4位
-    "verifyCodeRandom": "sOdQceeE" // 获取验证码时的随机字符串
+    ]
 }
 ```
 
@@ -1414,9 +1412,7 @@ null
 ```json5
 {
     "topicId": 1, // 主题帖编号
-    "content": "a", // 内容，必填，最大150000字符
-    "verifyCode": "abcd", // 图形验证码，必填，4位
-    "verifyCodeRandom": "sOdQceeE" // 获取验证码时的随机字符串
+    "content": "a" // 内容，必填，最大150000字符
 }
 ```
 
