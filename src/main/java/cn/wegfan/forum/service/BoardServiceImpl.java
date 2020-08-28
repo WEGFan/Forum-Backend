@@ -84,4 +84,9 @@ public class BoardServiceImpl extends ServiceImpl<BoardMapper, Board> implements
                 .in(Board::getId, idList));
     }
 
+    @Override
+    public boolean checkBoardAdminByUserIdAndBoardId(Long userId, Long boardId) {
+        return boardMapper.checkBoardAdminByUserIdAndBoardId(userId, boardId);
+    }
+
 }

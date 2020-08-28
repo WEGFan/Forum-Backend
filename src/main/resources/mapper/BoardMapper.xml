@@ -37,4 +37,21 @@
           AND board_admin.user_id = #{userId}
           AND delete_time IS NULL
     </select>
+
+
+    <select id="checkBoardAdminByUserIdAndBoardId" resultType="boolean">
+        SELECT count(1)
+        FROM board
+        WHERE board.id = #{boardId}
+          AND (exists(SELECT 1
+                      FROM board_admin
+                      WHERE board_admin.user_id = #{userId}
+                        AND board_admin.board_id = #{boardId}
+                        AND board.id = board_admin.board_id)
+            OR exists(SELECT 1
+                      FROM category_admin
+                      WHERE category_admin.user_id = #{userId}
+                        AND board.category_id = category_admin.category_id)
+            )
+    </select>
 </mapper>

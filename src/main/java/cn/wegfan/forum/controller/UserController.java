@@ -123,8 +123,8 @@ public class UserController {
      * 获取用户在指定板块的权限
      */
     @GetMapping("board-permission")
-    public ResultVo getBoardPermission(@RequestParam Integer boardId) {
-        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
+    public ResultVo getBoardPermission(@RequestParam Long boardId) {
+        return ResultVo.success(userServiceFacade.getUserBoardPermission(boardId));
     }
 
     /**

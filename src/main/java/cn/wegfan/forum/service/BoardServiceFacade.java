@@ -24,6 +24,7 @@ public class BoardServiceFacade {
     private BoardAdminService boardAdminService;
 
     public int addBoard(AddBoardRequestVo requestVo) {
+        // TODO: 板块权限
         Board sameNameBoard = boardService.getNotDeletedBoardByNameAndCategoryId(requestVo.getName(), requestVo.getCategoryId());
         if (sameNameBoard != null) {
             throw new BusinessException(BusinessErrorEnum.DUPLICATE_BOARD_NAME);
@@ -33,6 +34,7 @@ public class BoardServiceFacade {
     }
 
     public int updateBoard(UpdateBoardRequestVo requestVo) {
+        // TODO: 板块权限
         Board board = boardService.getNotDeletedBoardByBoardId(requestVo.getId());
         if (board == null) {
             throw new BusinessException(BusinessErrorEnum.BOARD_NOT_FOUND);

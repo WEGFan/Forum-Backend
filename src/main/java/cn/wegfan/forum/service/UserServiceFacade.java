@@ -414,4 +414,38 @@ public class UserServiceFacade {
         return new PageResultVo<>(responseVoList, pageResult);
     }
 
+    public UserBoardPermissionResponseVo getUserBoardPermission(Long boardId) {
+        Long userId = (Long)SecurityUtils.getSubject().getPrincipal();
+        User user = userService.getNotDeletedUserByUserId(userId);
+
+        boolean isBoardAdmin = user.getSuperBoardAdmin() | user.getAdmin() |
+                boardService.checkBoardAdminByUserIdAndBoardId(userId, boardId);
+
+        Permission forumPermission = Optional.ofNullable(permissionService.getForumPermissionByUserId(userId))
+                .orElse(Permission.getDefaultPermission());
+        Permission boardPermission = Optional.ofNullable(permissionService.getBoardPermissionByBoardId(boardId))
+                .orElse(Permission.getDefaultPermission());
+        Permission userBoardPermission = Optional.ofNullable(permissionService.getUserBoardPermissionByUserIdAndBoardId(userId, boardId))
+                .orElse(Permission.getDefaultPermission());
+
+        boolean banVisit = forumPermission.getBanVisit() | boardPermission.getBanVisit() | userBoardPermission.getBanVisit();
+        boolean banCreateTopic = banVisit | (!isBoardAdmin && boardPermission.getBanCreateTopic()) |
+                forumPermission.getBanCreateTopic() | userBoardPermission.getBanCreateTopic();
+        boolean banReply = banVisit | (!isBoardAdmin && boardPermission.getBanReply()) |
+                forumPermission.getBanReply() | userBoardPermission.getBanReply();
+        boolean banUploadAttachment = banVisit | (!isBoardAdmin && boardPermission.getBanUploadAttachment()) |
+                forumPermission.getBanUploadAttachment() | userBoardPermission.getBanUploadAttachment();
+        boolean banDownloadAttachment = banVisit | (!isBoardAdmin && boardPermission.getBanDownloadAttachment()) |
+                forumPermission.getBanDownloadAttachment() | userBoardPermission.getBanDownloadAttachment();
+
+        UserBoardPermissionResponseVo responseVo = new UserBoardPermissionResponseVo();
+        responseVo.setBoardAdmin(isBoardAdmin);
+        responseVo.setBanVisit(banVisit);
+        responseVo.setBanCreateTopic(banCreateTopic);
+        responseVo.setBanReply(banReply);
+        responseVo.setBanUploadAttachment(banUploadAttachment);
+        responseVo.setBanDownloadAttachment(banDownloadAttachment);
+        return responseVo;
+    }
+
 }

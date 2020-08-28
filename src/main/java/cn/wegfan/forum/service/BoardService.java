@@ -23,4 +23,6 @@ public interface BoardService extends IService<Board> {
 
     List<Board> batchListNotDeletedBoardsByBoardIds(List<Long> idList);
 
+    boolean checkBoardAdminByUserIdAndBoardId(Long userId, Long boardId);
+
 }

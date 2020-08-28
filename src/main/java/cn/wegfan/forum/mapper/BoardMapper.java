@@ -19,4 +19,6 @@ public interface BoardMapper extends BaseMapper<Board> {
 
     List<Board> selectNotDeletedAdminBoardListByUserId(Long userId);
 
+    boolean checkBoardAdminByUserIdAndBoardId(Long userId, Long boardId);
+
 }
