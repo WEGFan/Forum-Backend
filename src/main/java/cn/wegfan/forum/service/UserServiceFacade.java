@@ -230,7 +230,7 @@ public class UserServiceFacade {
         permissionService.addOrUpdateForumPermission(permission);
     }
 
-    public void updateBoardPermission(UpdateBoardPermissionRequestVo requestVo) {
+    public void updateUserBoardPermission(UpdateBoardPermissionRequestVo requestVo) {
         User user = userService.getNotDeletedUserByUserId(requestVo.getUserId());
         if (user == null) {
             throw new BusinessException(BusinessErrorEnum.USER_NOT_FOUND);
@@ -241,7 +241,7 @@ public class UserServiceFacade {
         }
 
         Permission permission = mapperFacade.map(requestVo, Permission.class);
-        permissionService.addOrUpdateBoardPermission(permission);
+        permissionService.addOrUpdateUserBoardPermission(permission);
     }
 
     public void updateUserInfo(UpdateUserInfoRequestVo requestVo) {

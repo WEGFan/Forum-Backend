@@ -212,8 +212,8 @@ public class UserController {
      * 【管理】修改用户的板块权限
      */
     @PostMapping("update-board-permission")
-    public ResultVo updateBoardPermission(@Valid @RequestBody UpdateBoardPermissionRequestVo requestVo) {
-        userServiceFacade.updateBoardPermission(requestVo);
+    public ResultVo updateUserBoardPermission(@Valid @RequestBody UpdateBoardPermissionRequestVo requestVo) {
+        userServiceFacade.updateUserBoardPermission(requestVo);
         return ResultVo.success(null);
     }
 
