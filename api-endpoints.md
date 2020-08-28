@@ -1751,7 +1751,7 @@ null
 
 ### 【管理】查看所有分区
 
-`GET /api/category/category-list?page=&count=`
+`GET /api/category/category-list?sort=&page=&count=`
 
 #### 权限
 
@@ -1761,8 +1761,16 @@ null
 
 | 字段名 | 字段类型 | 必填 | 含义                   | 样例 |
 | ------ | -------- | ---- | ---------------------- | ---- |
+| sort   | string   | 否   | 排序方式，默认为 `id`  | id   |
 | page   | int      | 是   | 页码                   | 1    |
 | count  | int      | 是   | 一次获取的个数，上限20 | 20   |
+
+排序方式：
+
+| sort  | 含义       |
+| ----- | ---------- |
+| id    | 按编号升序 |
+| order | 按顺序升序 |
 
 #### 操作成功时返回对象
 
