@@ -425,6 +425,23 @@ public class UserServiceFacade {
                 (user.getSuperBoardAdmin() || user.getAdmin() ||
                         boardService.checkBoardAdminByUserIdAndBoardId(userId, boardId));
 
+        Board board = boardService.getNotDeletedBoardByBoardId(boardId);
+        Category category = categoryService.getNotDeletedCategoryByCategoryId(board.getCategoryId());
+
+        boolean boardVisible = board.getVisible() && category.getVisible() || isBoardAdmin;
+
+        // 如果用户未登录则直接根据板块是否可见返回结果
+        if (user == null) {
+            UserBoardPermissionResponseVo responseVo = new UserBoardPermissionResponseVo();
+            responseVo.setBoardAdmin(false);
+            responseVo.setBanVisit(!boardVisible);
+            responseVo.setBanCreateTopic(true);
+            responseVo.setBanReply(true);
+            responseVo.setBanUploadAttachment(true);
+            responseVo.setBanDownloadAttachment(true);
+            return responseVo;
+        }
+
         Permission forumPermission = Optional.ofNullable(permissionService.getForumPermissionByUserId(userId))
                 .orElse(Permission.getDefaultPermission());
         Permission boardPermission = Optional.ofNullable(permissionService.getBoardPermissionByBoardId(boardId))
@@ -432,20 +449,15 @@ public class UserServiceFacade {
         Permission userBoardPermission = Optional.ofNullable(permissionService.getUserBoardPermissionByUserIdAndBoardId(userId, boardId))
                 .orElse(Permission.getDefaultPermission());
 
-        Board board = boardService.getNotDeletedBoardByBoardId(boardId);
-        Category category = categoryService.getNotDeletedCategoryByCategoryId(board.getCategoryId());
-
-        boolean boardVisible = board.getVisible() && category.getVisible() || isBoardAdmin;
-
         // 如果板块是隐藏的则禁止访问
         boolean banVisit = !boardVisible || forumPermission.getBanVisit() || boardPermission.getBanVisit() || userBoardPermission.getBanVisit();
-        boolean banCreateTopic = user == null || banVisit || (!isBoardAdmin && boardPermission.getBanCreateTopic()) ||
+        boolean banCreateTopic = banVisit || (!isBoardAdmin && boardPermission.getBanCreateTopic()) ||
                 forumPermission.getBanCreateTopic() || userBoardPermission.getBanCreateTopic();
-        boolean banReply = user == null || banVisit || (!isBoardAdmin && boardPermission.getBanReply()) ||
+        boolean banReply = banVisit || (!isBoardAdmin && boardPermission.getBanReply()) ||
                 forumPermission.getBanReply() || userBoardPermission.getBanReply();
-        boolean banUploadAttachment = user == null || banVisit || (!isBoardAdmin && boardPermission.getBanUploadAttachment()) ||
+        boolean banUploadAttachment = banVisit || (!isBoardAdmin && boardPermission.getBanUploadAttachment()) ||
                 forumPermission.getBanUploadAttachment() || userBoardPermission.getBanUploadAttachment();
-        boolean banDownloadAttachment = user == null || banVisit || (!isBoardAdmin && boardPermission.getBanDownloadAttachment()) ||
+        boolean banDownloadAttachment = banVisit || (!isBoardAdmin && boardPermission.getBanDownloadAttachment()) ||
                 forumPermission.getBanDownloadAttachment() || userBoardPermission.getBanDownloadAttachment();
 
         UserBoardPermissionResponseVo responseVo = new UserBoardPermissionResponseVo();
