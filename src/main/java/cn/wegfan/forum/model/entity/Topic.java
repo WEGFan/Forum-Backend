@@ -49,9 +49,9 @@ public class Topic implements Serializable {
     private String content;
 
     /**
-     * 短内容 纯文字
+     * 纯文字内容
      */
-    private String shortContent;
+    private String contentText;
 
     /**
      * 发布时间
