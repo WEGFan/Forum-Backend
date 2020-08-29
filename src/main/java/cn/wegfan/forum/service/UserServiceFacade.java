@@ -430,7 +430,12 @@ public class UserServiceFacade {
         Permission userBoardPermission = Optional.ofNullable(permissionService.getUserBoardPermissionByUserIdAndBoardId(userId, boardId))
                 .orElse(Permission.getDefaultPermission());
 
-        boolean banVisit = forumPermission.getBanVisit() | boardPermission.getBanVisit() | userBoardPermission.getBanVisit();
+        Board board = boardService.getNotDeletedBoardByBoardId(boardId);
+        Category category = categoryService.getNotDeletedCategoryByCategoryId(board.getCategoryId());
+
+        boolean boardVisible = board.getVisible() && category.getVisible() || isBoardAdmin;
+
+        boolean banVisit = !boardVisible | forumPermission.getBanVisit() | boardPermission.getBanVisit() | userBoardPermission.getBanVisit();
         boolean banCreateTopic = banVisit | (!isBoardAdmin && boardPermission.getBanCreateTopic()) |
                 forumPermission.getBanCreateTopic() | userBoardPermission.getBanCreateTopic();
         boolean banReply = banVisit | (!isBoardAdmin && boardPermission.getBanReply()) |
