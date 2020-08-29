@@ -420,7 +420,7 @@ public class UserServiceFacade {
         Long userId = (Long)SecurityUtils.getSubject().getPrincipal();
         User user = userService.getNotDeletedUserByUserId(userId);
 
-        boolean isBoardAdmin = user.getSuperBoardAdmin() | user.getAdmin() |
+        boolean isBoardAdmin = user.getSuperBoardAdmin() || user.getAdmin() ||
                 boardService.checkBoardAdminByUserIdAndBoardId(userId, boardId);
 
         Permission forumPermission = Optional.ofNullable(permissionService.getForumPermissionByUserId(userId))
@@ -435,15 +435,15 @@ public class UserServiceFacade {
 
         boolean boardVisible = board.getVisible() && category.getVisible() || isBoardAdmin;
 
-        boolean banVisit = !boardVisible | forumPermission.getBanVisit() | boardPermission.getBanVisit() | userBoardPermission.getBanVisit();
-        boolean banCreateTopic = banVisit | (!isBoardAdmin && boardPermission.getBanCreateTopic()) |
-                forumPermission.getBanCreateTopic() | userBoardPermission.getBanCreateTopic();
-        boolean banReply = banVisit | (!isBoardAdmin && boardPermission.getBanReply()) |
-                forumPermission.getBanReply() | userBoardPermission.getBanReply();
-        boolean banUploadAttachment = banVisit | (!isBoardAdmin && boardPermission.getBanUploadAttachment()) |
-                forumPermission.getBanUploadAttachment() | userBoardPermission.getBanUploadAttachment();
-        boolean banDownloadAttachment = banVisit | (!isBoardAdmin && boardPermission.getBanDownloadAttachment()) |
-                forumPermission.getBanDownloadAttachment() | userBoardPermission.getBanDownloadAttachment();
+        boolean banVisit = !boardVisible || forumPermission.getBanVisit() || boardPermission.getBanVisit() || userBoardPermission.getBanVisit();
+        boolean banCreateTopic = banVisit || (!isBoardAdmin && boardPermission.getBanCreateTopic()) ||
+                forumPermission.getBanCreateTopic() || userBoardPermission.getBanCreateTopic();
+        boolean banReply = banVisit || (!isBoardAdmin && boardPermission.getBanReply()) ||
+                forumPermission.getBanReply() || userBoardPermission.getBanReply();
+        boolean banUploadAttachment = banVisit || (!isBoardAdmin && boardPermission.getBanUploadAttachment()) ||
+                forumPermission.getBanUploadAttachment() || userBoardPermission.getBanUploadAttachment();
+        boolean banDownloadAttachment = banVisit || (!isBoardAdmin && boardPermission.getBanDownloadAttachment()) ||
+                forumPermission.getBanDownloadAttachment() || userBoardPermission.getBanDownloadAttachment();
 
         UserBoardPermissionResponseVo responseVo = new UserBoardPermissionResponseVo();
         responseVo.setBoardAdmin(isBoardAdmin);
