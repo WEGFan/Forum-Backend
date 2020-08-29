@@ -160,4 +160,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return userMapper.selectNotDeletedBoardAdminListByBoardId(boardId);
     }
 
+    @Override
+    public int updateUserAvatarByUserId(Long userId, String avatarPath) {
+        return userMapper.updateUserAvatarByUserId(userId, avatarPath);
+    }
+
 }

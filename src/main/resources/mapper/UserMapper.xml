@@ -177,4 +177,11 @@
           AND user.id = board_admin.user_id
           AND board_admin.board_id = #{boardId}
     </select>
+
+    <update id="updateUserAvatarByUserId">
+        UPDATE user
+        SET avatar_path = #{avatarPath},
+            update_time = now()
+        WHERE id = #{userId}
+    </update>
 </mapper>

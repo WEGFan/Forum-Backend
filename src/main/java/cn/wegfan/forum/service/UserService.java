@@ -41,4 +41,6 @@ public interface UserService extends IService<User> {
 
     List<User> listNotDeletedBoardAdminsByBoardId(Long boardId);
 
+    int updateUserAvatarByUserId(Long userId, String avatarPath);
+
 }

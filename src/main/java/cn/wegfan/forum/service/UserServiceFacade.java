@@ -1,9 +1,8 @@
 package cn.wegfan.forum.service;
 
-import cn.wegfan.forum.constant.BusinessErrorEnum;
-import cn.wegfan.forum.constant.CategoryListSortEnum;
-import cn.wegfan.forum.constant.SexEnum;
-import cn.wegfan.forum.constant.UserTypeEnum;
+import cn.hutool.core.img.ImgUtil;
+import cn.hutool.core.lang.UUID;
+import cn.wegfan.forum.constant.*;
 import cn.wegfan.forum.model.entity.Board;
 import cn.wegfan.forum.model.entity.Category;
 import cn.wegfan.forum.model.entity.Permission;
@@ -17,14 +16,22 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -441,6 +448,40 @@ public class UserServiceFacade {
         responseVo.setBanUploadAttachment(banUploadAttachment);
         responseVo.setBanDownloadAttachment(banDownloadAttachment);
         return responseVo;
+    }
+
+    public AvatarPathResponseVo updateUserAvatar(MultipartFile multipartFile) throws IOException {
+        String filename = UUID.randomUUID(true).toString(true);
+
+        File tempFile = File.createTempFile(Constant.TEMP_FILE_PREFIX, null);
+
+        multipartFile.transferTo(tempFile);
+
+        Tika tika = new Tika();
+        String fileType = tika.detect(tempFile);
+
+        if (!ArrayUtils.contains(Constant.ALLOWED_AVATAR_MEDIA_TYPES, fileType)) {
+            throw new BusinessException(BusinessErrorEnum.UPLOAD_FILE_TYPE_NOT_ALLOWED);
+        }
+
+        BufferedImage image = ImgUtil.read(tempFile);
+
+        Pair<Integer, Integer> imageSize = new ImmutablePair<>(image.getWidth(), image.getHeight());
+        if (imageSize.compareTo(Constant.AVATAR_MIN_SIZE) < 0 || imageSize.compareTo(Constant.AVATAR_MAX_SIZE) > 0 ||
+                image.getHeight() != image.getWidth()) {
+            throw new BusinessException(BusinessErrorEnum.WRONG_AVATAR_SIZE);
+        }
+
+        File file = Constant.AVATAR_PATH.resolve(filename + ".png").toFile();
+        ImgUtil.convert(tempFile, file);
+
+        tempFile.delete();
+
+        Long userId = (Long)SecurityUtils.getSubject().getPrincipal();
+        String avatarPath = Constant.AVATAR_API_ENDPOINT + file.getName();
+
+        userService.updateUserAvatarByUserId(userId, avatarPath);
+        return new AvatarPathResponseVo(avatarPath);
     }
 
 }

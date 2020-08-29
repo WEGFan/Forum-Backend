@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -91,8 +92,8 @@ public class UserController {
      * 修改头像
      */
     @PostMapping("update-avatar")
-    public ResultVo updateAvatar(@RequestParam("file") MultipartFile multipartFile) {
-        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
+    public ResultVo updateAvatar(@RequestParam("file") MultipartFile multipartFile) throws IOException {
+        return ResultVo.success(userServiceFacade.updateUserAvatar(multipartFile));
     }
 
     /**

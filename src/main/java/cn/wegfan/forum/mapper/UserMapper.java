@@ -48,4 +48,6 @@ public interface UserMapper extends BaseMapper<User> {
 
     List<User> selectNotDeletedBoardAdminListByBoardId(Long boardId);
 
+    int updateUserAvatarByUserId(Long userId, String avatarPath);
+
 }
