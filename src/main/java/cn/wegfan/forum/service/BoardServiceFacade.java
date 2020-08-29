@@ -90,6 +90,27 @@ public class BoardServiceFacade {
         return responseVoList;
     }
 
+    public List<BoardNameListGroupByCategoryResponseVo> getHomepageBoardList() {
+        Long userId = (Long)SecurityUtils.getSubject().getPrincipal();
+
+        List<Category> categoryList = categoryService.listNotDeletedCategories(CategoryListSortEnum.ORDER);
+
+        List<Board> boardList = boardService.listHomepageBoardsByUserId(userId);
+        LinkedHashMap<Long, List<Board>> boardGroupByCategoryMap = boardList.stream()
+                .collect(Collectors.groupingBy(Board::getCategoryId, LinkedHashMap::new, Collectors.toList()));
+
+        List<BoardNameListGroupByCategoryResponseVo> responseVoList = mapperFacade.mapAsList(categoryList, BoardNameListGroupByCategoryResponseVo.class);
+        responseVoList.forEach(item -> {
+            List<Board> categoryBoardList = boardGroupByCategoryMap.getOrDefault(item.getId(), Collections.emptyList());
+            item.setBoardList(mapperFacade.mapAsList(categoryBoardList, IdNameDescriptionResponseVo.class));
+        });
+        responseVoList = responseVoList.stream()
+                .filter(i -> !i.getBoardList().isEmpty())
+                .collect(Collectors.toList());
+
+        return responseVoList;
+    }
+
     public int addBoard(AddBoardRequestVo requestVo) {
         Board sameNameBoard = boardService.getNotDeletedBoardByNameAndCategoryId(requestVo.getName(), requestVo.getCategoryId());
         if (sameNameBoard != null) {

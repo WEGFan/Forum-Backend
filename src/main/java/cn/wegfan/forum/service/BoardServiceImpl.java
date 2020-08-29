@@ -121,4 +121,9 @@ public class BoardServiceImpl extends ServiceImpl<BoardMapper, Board> implements
                 sortEnum).getRecords();
     }
 
+    @Override
+    public List<Board> listHomepageBoardsByUserId(Long userId) {
+        return boardMapper.selectHomepageBoardListByUserId(userId);
+    }
+
 }

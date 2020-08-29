@@ -1,8 +1,7 @@
 package cn.wegfan.forum.controller;
 
-import cn.wegfan.forum.constant.BusinessErrorEnum;
 import cn.wegfan.forum.model.vo.response.ResultVo;
-import cn.wegfan.forum.util.BusinessException;
+import cn.wegfan.forum.service.BoardServiceFacade;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +17,15 @@ public class ForumController {
     @Autowired
     private MapperFacade mapperFacade;
 
+    @Autowired
+    private BoardServiceFacade boardServiceFacade;
+
     /**
      * 论坛主页获取分区和板块信息
      */
     @GetMapping("home-board-list")
     public ResultVo getForumHomeBoardList() {
-        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
+        return ResultVo.success(boardServiceFacade.getHomepageBoardList());
     }
 
 }

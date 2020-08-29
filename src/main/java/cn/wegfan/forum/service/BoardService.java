@@ -33,4 +33,6 @@ public interface BoardService extends IService<Board> {
 
     List<Board> listNotDeletedAdminBoardsWithBoardCategoryAdminByUserId(Long userId, BoardListSortEnum sortEnum);
 
+    List<Board> listHomepageBoardsByUserId(Long userId);
+
 }

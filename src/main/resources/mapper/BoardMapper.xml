@@ -73,11 +73,40 @@
         ORDER BY ${orderBy}
     </select>
 
-    <select id="selectNotDeletedBoardListByPage" resultType="cn.wegfan.forum.model.entity.Board">
+    <select id="selectNotDeletedBoardListByPage" resultType="Board">
         SELECT board.*
         FROM board
                  LEFT JOIN category ON board.category_id = category.id
         WHERE board.delete_time IS NULL
         ORDER BY ${orderBy}
+    </select>
+
+    <select id="selectHomepageBoardListByUserId" resultType="Board">
+        SELECT DISTINCT board.*, category.id AS c_id, category.order AS c_order
+        FROM user,
+             board
+                 LEFT JOIN category ON board.category_id = category.id
+        WHERE board.delete_time IS NULL
+            AND board.visible = 1
+            AND category.visible = 1
+           OR user.id = #{userId}
+            AND (user.admin = 1 OR user.super_board_admin = 1)
+        UNION
+        (
+            SELECT board.*, category.id AS c_id, category.order AS c_order
+            FROM board
+                     LEFT JOIN category ON board.category_id = category.id
+            WHERE board.delete_time IS NULL
+              AND (exists(SELECT 1
+                          FROM board_admin
+                          WHERE board_admin.user_id = #{userId}
+                            AND board_admin.board_id = board.id)
+                OR exists(SELECT 1
+                          FROM category_admin
+                          WHERE category_admin.user_id = #{userId}
+                            AND board.category_id = category_admin.category_id)
+                )
+        )
+        ORDER BY `c_order`, `c_id`, `order`, `id`
     </select>
 </mapper>

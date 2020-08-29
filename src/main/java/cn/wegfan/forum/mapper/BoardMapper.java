@@ -26,4 +26,6 @@ public interface BoardMapper extends BaseMapper<Board> {
 
     Page<Board> selectNotDeletedAdminBoardListWithBoardCategoryAdminByUserId(Page<?> page, Long userId, String orderBy);
 
+    List<Board> selectHomepageBoardListByUserId(Long userId);
+
 }
