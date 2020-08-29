@@ -59,7 +59,8 @@
     <select id="selectNotDeletedAdminBoardListWithBoardCategoryAdminByUserId" resultType="Board">
         SELECT board.*
         FROM board
-        WHERE delete_time IS NULL
+                 LEFT JOIN category ON board.category_id = category.id
+        WHERE board.delete_time IS NULL
           AND (exists(SELECT 1
                       FROM board_admin
                       WHERE board_admin.user_id = #{userId}
@@ -73,9 +74,10 @@
     </select>
 
     <select id="selectNotDeletedBoardListByPage" resultType="cn.wegfan.forum.model.entity.Board">
-        SELECT *
+        SELECT board.*
         FROM board
-        WHERE delete_time IS NULL
+                 LEFT JOIN category ON board.category_id = category.id
+        WHERE board.delete_time IS NULL
         ORDER BY ${orderBy}
     </select>
 </mapper>

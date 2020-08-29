@@ -1,6 +1,7 @@
 package cn.wegfan.forum.service;
 
 import cn.wegfan.forum.constant.BoardListSortEnum;
+import cn.wegfan.forum.constant.Constant;
 import cn.wegfan.forum.mapper.BoardMapper;
 import cn.wegfan.forum.mapper.UserMapper;
 import cn.wegfan.forum.model.entity.Board;
@@ -112,6 +113,12 @@ public class BoardServiceImpl extends ServiceImpl<BoardMapper, Board> implements
             return boardMapper.selectNotDeletedAdminBoardListWithBoardCategoryAdminByUserId(page, userId,
                     sortEnum.getOrderBySql());
         }
+    }
+
+    @Override
+    public List<Board> listNotDeletedAdminBoardsWithBoardCategoryAdminByUserId(Long userId, BoardListSortEnum sortEnum) {
+        return listNotDeletedAdminBoardsWithBoardCategoryAdminByPageAndUserId(Constant.UNPAGED_PAGE, userId,
+                sortEnum).getRecords();
     }
 
 }

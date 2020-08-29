@@ -1,13 +1,11 @@
 package cn.wegfan.forum.controller;
 
 import cn.wegfan.forum.constant.BoardListSortEnum;
-import cn.wegfan.forum.constant.BusinessErrorEnum;
 import cn.wegfan.forum.model.vo.request.AddBoardRequestVo;
 import cn.wegfan.forum.model.vo.request.IdRequestVo;
 import cn.wegfan.forum.model.vo.request.UpdateBoardRequestVo;
 import cn.wegfan.forum.model.vo.response.ResultVo;
 import cn.wegfan.forum.service.BoardServiceFacade;
-import cn.wegfan.forum.util.BusinessException;
 import cn.wegfan.forum.util.PaginationUtil;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -44,7 +42,7 @@ public class BoardController {
      */
     @GetMapping("board-name-list")
     public ResultVo getBoardNameList() {
-        throw new BusinessException(BusinessErrorEnum.NOT_IMPLEMENTED);
+        return ResultVo.success(boardServiceFacade.getBoardNameList());
     }
 
     /**

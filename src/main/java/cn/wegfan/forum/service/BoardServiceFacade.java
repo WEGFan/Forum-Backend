@@ -2,16 +2,14 @@ package cn.wegfan.forum.service;
 
 import cn.wegfan.forum.constant.BoardListSortEnum;
 import cn.wegfan.forum.constant.BusinessErrorEnum;
+import cn.wegfan.forum.constant.CategoryListSortEnum;
 import cn.wegfan.forum.model.entity.Board;
 import cn.wegfan.forum.model.entity.Category;
 import cn.wegfan.forum.model.entity.Permission;
 import cn.wegfan.forum.model.entity.User;
 import cn.wegfan.forum.model.vo.request.AddBoardRequestVo;
 import cn.wegfan.forum.model.vo.request.UpdateBoardRequestVo;
-import cn.wegfan.forum.model.vo.response.BoardResponseVo;
-import cn.wegfan.forum.model.vo.response.IdNameResponseVo;
-import cn.wegfan.forum.model.vo.response.PageResultVo;
-import cn.wegfan.forum.model.vo.response.PermissionResponseVo;
+import cn.wegfan.forum.model.vo.response.*;
 import cn.wegfan.forum.util.BusinessException;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
@@ -20,8 +18,11 @@ import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -66,6 +67,27 @@ public class BoardServiceFacade {
         });
 
         return new PageResultVo<>(responseVoList, pageResult);
+    }
+
+    public List<BoardNameListGroupByCategoryResponseVo> getBoardNameList() {
+        Long userId = (Long)SecurityUtils.getSubject().getPrincipal();
+
+        List<Category> categoryList = categoryService.listNotDeletedCategories(CategoryListSortEnum.ORDER);
+
+        List<Board> boardList = boardService.listNotDeletedAdminBoardsWithBoardCategoryAdminByUserId(userId, BoardListSortEnum.ORDER);
+        LinkedHashMap<Long, List<Board>> boardGroupByCategoryMap = boardList.stream()
+                .collect(Collectors.groupingBy(Board::getCategoryId, LinkedHashMap::new, Collectors.toList()));
+
+        List<BoardNameListGroupByCategoryResponseVo> responseVoList = mapperFacade.mapAsList(categoryList, BoardNameListGroupByCategoryResponseVo.class);
+        responseVoList.forEach(item -> {
+            List<Board> categoryBoardList = boardGroupByCategoryMap.getOrDefault(item.getId(), Collections.emptyList());
+            item.setBoardList(mapperFacade.mapAsList(categoryBoardList, IdNameDescriptionResponseVo.class));
+        });
+        responseVoList = responseVoList.stream()
+                .filter(i -> !i.getBoardList().isEmpty())
+                .collect(Collectors.toList());
+
+        return responseVoList;
     }
 
     public int addBoard(AddBoardRequestVo requestVo) {
