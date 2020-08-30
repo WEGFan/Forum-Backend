@@ -82,11 +82,11 @@ public class Constant {
     /**
      * 获取附件文件接口地址
      */
-    public static final String ATTACHMENT_API_ENDPOINT = "/api/file/attachment";
+    public static final String ATTACHMENT_API_ENDPOINT = "/api/file/attachment/";
 
     /**
      * 获取图片文件接口地址
      */
-    public static final String IMAGE_API_ENDPOINT = "/api/file/image";
+    public static final String IMAGE_API_ENDPOINT = "/api/file/image/";
 
 }
