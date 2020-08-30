@@ -79,8 +79,8 @@ public class BoardServiceImpl extends ServiceImpl<BoardMapper, Board> implements
     }
 
     @Override
-    public List<Board> listNotDeletedAdminBoardsWithBoardAdminByUserId(Long userId) {
-        return boardMapper.selectNotDeletedAdminBoardListWithBoardAdminByUserId(userId);
+    public List<Board> listNotDeletedAdminBoardsByUserId(Long userId) {
+        return boardMapper.selectNotDeletedAdminBoardListByUserId(userId);
     }
 
     @Override
@@ -103,21 +103,21 @@ public class BoardServiceImpl extends ServiceImpl<BoardMapper, Board> implements
     }
 
     @Override
-    public Page<Board> listNotDeletedAdminBoardsWithBoardCategoryAdminByPageAndUserId(Page<?> page, Long userId,
-                                                                                      BoardListSortEnum sortEnum) {
+    public Page<Board> listNotDeletedAllAdminBoardsByPageAndUserId(Page<?> page, Long userId,
+                                                                   BoardListSortEnum sortEnum) {
         User user = userMapper.selectNotDeletedByUserId(userId);
         // 如果管理员或超级版主则直接获取所有分区
         if (user.getAdmin() || user.getSuperBoardAdmin()) {
             return boardMapper.selectNotDeletedBoardListByPage(page, sortEnum.getOrderBySql());
         } else {
-            return boardMapper.selectNotDeletedAdminBoardListWithBoardCategoryAdminByUserId(page, userId,
+            return boardMapper.selectNotDeletedAdminBoardListIncludingCategoryAdminByUserId(page, userId,
                     sortEnum.getOrderBySql());
         }
     }
 
     @Override
-    public List<Board> listNotDeletedAdminBoardsWithBoardCategoryAdminByUserId(Long userId, BoardListSortEnum sortEnum) {
-        return listNotDeletedAdminBoardsWithBoardCategoryAdminByPageAndUserId(Constant.UNPAGED_PAGE, userId,
+    public List<Board> listNotDeletedAllAdminBoardsByUserId(Long userId, BoardListSortEnum sortEnum) {
+        return listNotDeletedAllAdminBoardsByPageAndUserId(Constant.UNPAGED_PAGE, userId,
                 sortEnum).getRecords();
     }
 

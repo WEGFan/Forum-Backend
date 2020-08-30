@@ -29,7 +29,7 @@
         WHERE id = #{boardId}
     </update>
 
-    <select id="selectNotDeletedAdminBoardListWithBoardAdminByUserId" resultType="Board">
+    <select id="selectNotDeletedAdminBoardListByUserId" resultType="Board">
         SELECT board.*
         FROM board,
              board_admin
@@ -56,7 +56,7 @@
             )
     </select>
 
-    <select id="selectNotDeletedAdminBoardListWithBoardCategoryAdminByUserId" resultType="Board">
+    <select id="selectNotDeletedAdminBoardListIncludingCategoryAdminByUserId" resultType="Board">
         SELECT board.*
         FROM board
                  LEFT JOIN category ON board.category_id = category.id

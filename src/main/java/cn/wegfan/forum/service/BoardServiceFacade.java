@@ -50,7 +50,7 @@ public class BoardServiceFacade {
         Long userId = (Long)SecurityUtils.getSubject().getPrincipal();
 
         Page<?> page = new Page<>(pageIndex, pageSize);
-        Page<Board> pageResult = boardService.listNotDeletedAdminBoardsWithBoardCategoryAdminByPageAndUserId(page, userId, sortEnum);
+        Page<Board> pageResult = boardService.listNotDeletedAllAdminBoardsByPageAndUserId(page, userId, sortEnum);
 
         List<BoardResponseVo> responseVoList = mapperFacade.mapAsList(pageResult.getRecords(), BoardResponseVo.class);
         responseVoList.forEach(item -> {
@@ -74,7 +74,7 @@ public class BoardServiceFacade {
 
         List<Category> categoryList = categoryService.listNotDeletedCategories(CategoryListSortEnum.ORDER);
 
-        List<Board> boardList = boardService.listNotDeletedAdminBoardsWithBoardCategoryAdminByUserId(userId, BoardListSortEnum.ORDER);
+        List<Board> boardList = boardService.listNotDeletedAllAdminBoardsByUserId(userId, BoardListSortEnum.ORDER);
         LinkedHashMap<Long, List<Board>> boardGroupByCategoryMap = boardList.stream()
                 .collect(Collectors.groupingBy(Board::getCategoryId, LinkedHashMap::new, Collectors.toList()));
 

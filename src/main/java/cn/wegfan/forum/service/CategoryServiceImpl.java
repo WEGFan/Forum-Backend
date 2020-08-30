@@ -88,12 +88,12 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     }
 
     @Override
-    public List<Category> listNotDeletedAdminCategoriesByUserId(Long userId, CategoryListSortEnum sortEnum) {
-        return listNotDeletedAdminCategoriesByPageAndUserId(Constant.UNPAGED_PAGE, userId, sortEnum).getRecords();
+    public List<Category> listNotDeletedAllAdminCategoriesByUserId(Long userId, CategoryListSortEnum sortEnum) {
+        return listNotDeletedAllAdminCategoriesByPageAndUserId(Constant.UNPAGED_PAGE, userId, sortEnum).getRecords();
     }
 
     @Override
-    public Page<Category> listNotDeletedAdminCategoriesByPageAndUserId(Page<?> page, Long userId, CategoryListSortEnum sortEnum) {
+    public Page<Category> listNotDeletedAllAdminCategoriesByPageAndUserId(Page<?> page, Long userId, CategoryListSortEnum sortEnum) {
         User user = userMapper.selectNotDeletedByUserId(userId);
         // 如果管理员或超级版主则直接获取所有分区
         if (user.getAdmin() || user.getSuperBoardAdmin()) {
@@ -101,6 +101,12 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         } else {
             return categoryMapper.selectNotDeletedAdminCategoryListByPageAndUserId(page, userId, sortEnum.getOrderBySql());
         }
+    }
+
+    @Override
+    public List<Category> listNotDeletedAdminCategoriesByUserId(Long userId) {
+        return categoryMapper.selectNotDeletedAdminCategoryListByPageAndUserId(Constant.UNPAGED_PAGE, userId,
+                CategoryListSortEnum.ID.getOrderBySql()).getRecords();
     }
 
 }

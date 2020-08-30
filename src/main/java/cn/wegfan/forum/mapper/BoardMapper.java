@@ -18,13 +18,13 @@ public interface BoardMapper extends BaseMapper<Board> {
 
     int deleteByBoardId(Long boardId);
 
-    List<Board> selectNotDeletedAdminBoardListWithBoardAdminByUserId(Long userId);
+    List<Board> selectNotDeletedAdminBoardListByUserId(Long userId);
 
     boolean checkBoardAdminByUserIdAndBoardId(Long userId, Long boardId);
 
     Page<Board> selectNotDeletedBoardListByPage(Page<?> page, String orderBy);
 
-    Page<Board> selectNotDeletedAdminBoardListWithBoardCategoryAdminByUserId(Page<?> page, Long userId, String orderBy);
+    Page<Board> selectNotDeletedAdminBoardListIncludingCategoryAdminByUserId(Page<?> page, Long userId, String orderBy);
 
     List<Board> selectHomepageBoardListByUserId(Long userId);
 

@@ -25,8 +25,10 @@ public interface CategoryService extends IService<Category> {
 
     int deleteCategoryByCategoryId(Long categoryId);
 
-    List<Category> listNotDeletedAdminCategoriesByUserId(Long userId, CategoryListSortEnum sortEnum);
+    List<Category> listNotDeletedAllAdminCategoriesByUserId(Long userId, CategoryListSortEnum sortEnum);
 
-    Page<Category> listNotDeletedAdminCategoriesByPageAndUserId(Page<?> page, Long userId, CategoryListSortEnum sortEnum);
+    Page<Category> listNotDeletedAllAdminCategoriesByPageAndUserId(Page<?> page, Long userId, CategoryListSortEnum sortEnum);
+
+    List<Category> listNotDeletedAdminCategoriesByUserId(Long userId);
 
 }

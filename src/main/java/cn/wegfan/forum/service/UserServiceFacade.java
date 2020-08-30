@@ -329,8 +329,8 @@ public class UserServiceFacade {
             responseVo.setEmailVerified(null);
         }
 
-        List<Board> boardAdminList = boardService.listNotDeletedAdminBoardsWithBoardAdminByUserId(userId);
-        List<Category> categoryAdminList = categoryService.listNotDeletedAdminCategoriesByUserId(userId, CategoryListSortEnum.ID);
+        List<Board> boardAdminList = boardService.listNotDeletedAdminBoardsByUserId(userId);
+        List<Category> categoryAdminList = categoryService.listNotDeletedAdminCategoriesByUserId(userId);
 
         responseVo.setBoardAdmin(mapperFacade.mapAsList(boardAdminList, IdNameResponseVo.class));
         responseVo.setCategoryAdmin(mapperFacade.mapAsList(categoryAdminList, IdNameResponseVo.class));
@@ -370,8 +370,8 @@ public class UserServiceFacade {
             Long userId = item.getId();
 
             // 设置版主和分区版主
-            List<Board> boardAdminList = boardService.listNotDeletedAdminBoardsWithBoardAdminByUserId(userId);
-            List<Category> categoryAdminList = categoryService.listNotDeletedAdminCategoriesByUserId(userId, CategoryListSortEnum.ID);
+            List<Board> boardAdminList = boardService.listNotDeletedAdminBoardsByUserId(userId);
+            List<Category> categoryAdminList = categoryService.listNotDeletedAdminCategoriesByUserId(userId);
 
             item.setBoardAdmin(mapperFacade.mapAsList(boardAdminList, IdNameResponseVo.class));
             item.setCategoryAdmin(mapperFacade.mapAsList(categoryAdminList, IdNameResponseVo.class));
