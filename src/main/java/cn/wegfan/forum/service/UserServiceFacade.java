@@ -426,6 +426,16 @@ public class UserServiceFacade {
                         boardService.checkBoardAdminByUserIdAndBoardId(userId, boardId));
 
         Board board = boardService.getNotDeletedBoardByBoardId(boardId);
+        if (board == null) {
+            UserBoardPermissionResponseVo responseVo = new UserBoardPermissionResponseVo();
+            responseVo.setBoardAdmin(false);
+            responseVo.setBanVisit(true);
+            responseVo.setBanCreateTopic(true);
+            responseVo.setBanReply(true);
+            responseVo.setBanUploadAttachment(true);
+            responseVo.setBanDownloadAttachment(true);
+            return responseVo;
+        }
         Category category = categoryService.getNotDeletedCategoryByCategoryId(board.getCategoryId());
 
         boolean boardVisible = board.getVisible() && category.getVisible() || isBoardAdmin;
