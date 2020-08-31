@@ -269,7 +269,7 @@ public class UserServiceFacade {
         if (sameEmailUser != null && !sameEmailUser.getId().equals(user.getId())) {
             throw new BusinessException(BusinessErrorEnum.DUPLICATE_EMAIL);
         }
-        if (!requestVo.getAdmin()) {
+        if (requestVo.getId().equals(SecurityUtils.getSubject().getPrincipal()) && !requestVo.getAdmin()) {
             throw new BusinessException(BusinessErrorEnum.CANT_SET_OWN_ACCOUNT_ADMIN);
         }
 
