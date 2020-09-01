@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.servlet.Filter;
+import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -41,7 +42,7 @@ public class ShiroConfig {
         // 设置自定义sessionDao操作类
         sessionManager.setSessionDAO(redisSessionDao());
         // 设置session一天后过期
-        sessionManager.setGlobalSessionTimeout(24 * 60 * 60 * 1000);
+        sessionManager.setGlobalSessionTimeout(Duration.ofDays(1).toMillis());
         // 删除过期缓存
         sessionManager.setDeleteInvalidSessions(true);
         // 设置定期扫描缓存
@@ -52,6 +53,7 @@ public class ShiroConfig {
         Cookie cookie = new SimpleCookie(ShiroHttpSession.DEFAULT_SESSION_ID_NAME);
         cookie.setHttpOnly(true);
         cookie.setSameSite(null);
+        cookie.setMaxAge((int)Duration.ofDays(1).getSeconds());
         sessionManager.setSessionIdCookie(cookie);
         sessionManager.setSessionIdCookieEnabled(true);
         return sessionManager;
