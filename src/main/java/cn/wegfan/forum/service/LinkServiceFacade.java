@@ -11,11 +11,13 @@ import ma.glasnost.orika.MapperFacade;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @Slf4j
+@Transactional(rollbackFor = Exception.class)
 public class LinkServiceFacade {
 
     @Autowired

@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -79,6 +80,12 @@ public class BoardServiceImpl extends ServiceImpl<BoardMapper, Board> implements
     }
 
     @Override
+    @CacheEvict(key = "'notDeletedIdList'")
+    public int deleteBoardByCategoryId(Long categoryId) {
+        return boardMapper.deleteByCategoryId(categoryId);
+    }
+
+    @Override
     public List<Board> listNotDeletedAdminBoardsByUserId(Long userId) {
         return boardMapper.selectNotDeletedAdminBoardListByUserId(userId);
     }
@@ -119,6 +126,14 @@ public class BoardServiceImpl extends ServiceImpl<BoardMapper, Board> implements
     public List<Board> listNotDeletedAllAdminBoardsByUserId(Long userId, BoardListSortEnum sortEnum) {
         return listNotDeletedAllAdminBoardsByPageAndUserId(Constant.UNPAGED_PAGE, userId,
                 sortEnum).getRecords();
+    }
+
+    @Override
+    public List<Long> listNotDeletedAllAdminBoardIdsByUserId(Long userId) {
+        return listNotDeletedAllAdminBoardsByUserId(userId, BoardListSortEnum.ID)
+                .stream()
+                .map(Board::getId)
+                .collect(Collectors.toList());
     }
 
     @Override

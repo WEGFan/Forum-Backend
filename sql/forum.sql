@@ -3,7 +3,7 @@
  Target Server Version : 50728
  File Encoding         : 65001
 
- Date: 2020-08-27 11:22:47
+ Date: 2020-09-12 01:03:26
 */
 
 CREATE USER IF NOT EXISTS 'forum'@'localhost' IDENTIFIED BY 'forum.%{^_%u<_l,mQnUbyXYwr0QvU:,FHBJ,6"Xg7ff^19Mc<tcCGS2p!ia@F52Gpw3%mUt,1A_*w~3dOd#A';
@@ -23,7 +23,7 @@ CREATE TABLE `attachment`
 (
     `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '附件编号',
     `topic_id` bigint(20) UNSIGNED NULL DEFAULT NULL COMMENT '所属主题编号',
-    `board_id` bigint(20) UNSIGNED NOT NULL COMMENT '所属板块编号',
+    `board_id` bigint(20) UNSIGNED NULL DEFAULT NULL COMMENT '所属板块编号',
     `filename` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '原始文件名',
     `file_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '文件路径',
     `file_size` int(11) UNSIGNED NOT NULL COMMENT '文件大小',
@@ -66,7 +66,9 @@ CREATE TABLE `board`
     `create_time` datetime(0) NOT NULL COMMENT '创建时间',
     `update_time` datetime(0) NOT NULL COMMENT '更新时间',
     `delete_time` datetime(0) NULL DEFAULT NULL COMMENT '删除时间',
-    PRIMARY KEY (`id`) USING BTREE
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `board_ibfk_category_id` (`category_id`) USING BTREE,
+    CONSTRAINT `board_ibfk_category_id` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
   CHARACTER SET = utf8mb4
@@ -173,33 +175,6 @@ CREATE TABLE `link`
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for operation_log
--- ----------------------------
-DROP TABLE IF EXISTS `operation_log`;
-CREATE TABLE `operation_log`
-(
-    `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '操作编号',
-    `operator_user_id` bigint(20) UNSIGNED NOT NULL COMMENT '操作者用户编号',
-    `operator_ip` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '操作者ip',
-    `item_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '操作对象类型 attachment/board/category/reply/topic/user',
-    `item_id` bigint(20) UNSIGNED NOT NULL COMMENT '操作对象编号',
-    `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '操作类型',
-    `detail` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '详细信息',
-    `operate_time` datetime(0) NOT NULL COMMENT '操作时间',
-    PRIMARY KEY (`id`) USING BTREE,
-    INDEX `operation_log_ibfk_operator_user_id` (`operator_user_id`) USING BTREE,
-    CONSTRAINT `operation_log_ibfk_operator_user_id` FOREIGN KEY (`operator_user_id`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE = InnoDB
-  AUTO_INCREMENT = 1
-  CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_general_ci COMMENT = '全站操作日志表'
-  ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of operation_log
--- ----------------------------
-
--- ----------------------------
 -- Table structure for permission
 -- ----------------------------
 DROP TABLE IF EXISTS `permission`;
@@ -236,8 +211,10 @@ CREATE TABLE `reply`
 (
     `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '回复编号',
     `topic_id` bigint(20) UNSIGNED NOT NULL COMMENT '所属主题编号',
+    `board_id` bigint(20) UNSIGNED NOT NULL COMMENT '所属板块编号',
+    `category_id` bigint(20) UNSIGNED NOT NULL COMMENT '所属分区编号',
     `content` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '回复内容 150000字符内',
-    `short_content` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '短内容 纯文字',
+    `content_text` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '纯文字内容',
     `reply_time` datetime(0) NOT NULL COMMENT '回复时间',
     `replier_user_id` bigint(20) UNSIGNED NOT NULL COMMENT '回复者用户编号',
     `replier_ip` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '回复者ip',
@@ -249,7 +226,11 @@ CREATE TABLE `reply`
     INDEX `reply_ibfk_topic_id` (`topic_id`) USING BTREE,
     INDEX `reply_ibfk_replier_user_id` (`replier_user_id`) USING BTREE,
     INDEX `reply_ibfk_editor_user_id` (`editor_user_id`) USING BTREE,
-    FULLTEXT INDEX `reply_idx_short_content` (`short_content`) WITH PARSER `ngram`,
+    INDEX `reply_ibfk_board_id` (`board_id`) USING BTREE,
+    INDEX `reply_ibfk_category_id` (`category_id`) USING BTREE,
+    FULLTEXT INDEX `reply_idx_content_text` (`content_text`) WITH PARSER `ngram`,
+    CONSTRAINT `reply_ibfk_board_id` FOREIGN KEY (`board_id`) REFERENCES `board` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT `reply_ibfk_category_id` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT `reply_ibfk_editor_user_id` FOREIGN KEY (`editor_user_id`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT `reply_ibfk_replier_user_id` FOREIGN KEY (`replier_user_id`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT `reply_ibfk_topic_id` FOREIGN KEY (`topic_id`) REFERENCES `topic` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
@@ -273,9 +254,9 @@ CREATE TABLE `topic`
     `category_id` bigint(20) UNSIGNED NOT NULL COMMENT '所在分区编号',
     `board_id` bigint(20) UNSIGNED NOT NULL COMMENT '所在板块编号',
     `type` tinyint(4) UNSIGNED NOT NULL COMMENT '主题类型 0-普通主题 1-公告',
-    `title` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '标题 120字符内',
+    `title` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '标题 30字符内',
     `content` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '内容 150000字符内',
-    `short_content` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '短内容 纯文字',
+    `content_text` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '纯文字内容',
     `submit_time` datetime(0) NOT NULL COMMENT '发布时间',
     `submitter_user_id` bigint(20) UNSIGNED NOT NULL COMMENT '发布者用户编号',
     `submitter_ip` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '发布者ip',
@@ -283,6 +264,7 @@ CREATE TABLE `topic`
     `reply_count` bigint(20) UNSIGNED NOT NULL COMMENT '回复总数',
     `last_reply_time` datetime(0) NOT NULL COMMENT '最后回复时间（没回复就是发帖时间 排序方便）',
     `last_replier_user_id` bigint(20) UNSIGNED NOT NULL COMMENT '最后回复者用户编号',
+    `last_replier_ip` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '最后回复者ip',
     `pinned` tinyint(1) UNSIGNED NOT NULL COMMENT '是否置顶',
     `featured` tinyint(1) UNSIGNED NOT NULL COMMENT '是否精华',
     `edit_time` datetime(0) NULL DEFAULT NULL COMMENT '最后编辑时间',
@@ -295,7 +277,6 @@ CREATE TABLE `topic`
     INDEX `topic_ibfk_submitter_user_id` (`submitter_user_id`) USING BTREE,
     INDEX `topic_ibfk_last_replier_user_id` (`last_replier_user_id`) USING BTREE,
     INDEX `topic_ibfk_editor_user_id` (`editor_user_id`) USING BTREE,
-    FULLTEXT INDEX `topic_idx_title` (`title`) WITH PARSER `ngram`,
     CONSTRAINT `topic_ibfk_board_id` FOREIGN KEY (`board_id`) REFERENCES `board` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT `topic_ibfk_category_id` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT `topic_ibfk_editor_user_id` FOREIGN KEY (`editor_user_id`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
@@ -321,6 +302,7 @@ CREATE TABLE `topic_operation_log`
     `topic_id` bigint(20) UNSIGNED NOT NULL COMMENT '主题编号',
     `operator_user_id` bigint(20) UNSIGNED NOT NULL COMMENT '操作者用户编号',
     `operator_ip` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '操作者ip',
+    `operate_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '操作类型',
     `reason` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '操作原因',
     `operate_time` datetime(0) NOT NULL COMMENT '操作时间',
     PRIMARY KEY (`id`) USING BTREE,
@@ -362,7 +344,9 @@ CREATE TABLE `user`
     `register_time` datetime(0) NOT NULL COMMENT '注册时间',
     `update_time` datetime(0) NOT NULL COMMENT '更新时间',
     `delete_time` datetime(0) NULL DEFAULT NULL COMMENT '删除时间',
-    PRIMARY KEY (`id`) USING BTREE
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `username` (`username`) USING BTREE,
+    INDEX `password` (`password`) USING BTREE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
   CHARACTER SET = utf8mb4

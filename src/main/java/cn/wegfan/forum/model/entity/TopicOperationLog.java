@@ -1,5 +1,6 @@
 package cn.wegfan.forum.model.entity;
 
+import cn.wegfan.forum.constant.ManageTopicActionEnum;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
@@ -37,6 +38,11 @@ public class TopicOperationLog implements Serializable {
      * 操作者ip
      */
     private String operatorIp;
+
+    /**
+     * 操作类型
+     */
+    private ManageTopicActionEnum operateType;
 
     /**
      * 操作原因

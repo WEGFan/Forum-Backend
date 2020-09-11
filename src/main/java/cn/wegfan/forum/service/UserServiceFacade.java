@@ -2,7 +2,10 @@ package cn.wegfan.forum.service;
 
 import cn.hutool.core.img.ImgUtil;
 import cn.hutool.core.lang.UUID;
-import cn.wegfan.forum.constant.*;
+import cn.wegfan.forum.constant.BusinessErrorEnum;
+import cn.wegfan.forum.constant.Constant;
+import cn.wegfan.forum.constant.SexEnum;
+import cn.wegfan.forum.constant.UserTypeEnum;
 import cn.wegfan.forum.model.entity.Board;
 import cn.wegfan.forum.model.entity.Category;
 import cn.wegfan.forum.model.entity.Permission;
@@ -10,6 +13,7 @@ import cn.wegfan.forum.model.entity.User;
 import cn.wegfan.forum.model.vo.request.*;
 import cn.wegfan.forum.model.vo.response.*;
 import cn.wegfan.forum.util.BusinessException;
+import cn.wegfan.forum.util.IpUtil;
 import cn.wegfan.forum.util.PasswordUtil;
 import cn.wegfan.forum.util.SessionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -26,7 +30,9 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.image.BufferedImage;
@@ -38,6 +44,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@Transactional(rollbackFor = Exception.class)
 public class UserServiceFacade {
 
     @Autowired
@@ -61,8 +68,25 @@ public class UserServiceFacade {
     @Autowired
     private PermissionService permissionService;
 
+    @Autowired
+    private TopicService topicService;
+
+    @Autowired
+    private ReplyService replyService;
+
+    @Autowired
+    private AttachmentService attachmentService;
+
+    @Autowired
+    private CaptchaService captchaService;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Value("${spring.mail.username}")
+    private String emailSender;
+
     public UserLoginResponseVo login(UserLoginRequestVo requestVo) {
-        // TODO: 验证码
         User user = userService.getNotDeletedUserByUsername(requestVo.getUsername());
         if (user == null) {
             throw new BusinessException(BusinessErrorEnum.WRONG_USERNAME_OR_PASSWORD);
@@ -80,8 +104,8 @@ public class UserServiceFacade {
             throw new BusinessException(BusinessErrorEnum.WRONG_USERNAME_OR_PASSWORD);
         }
 
-        // TODO: ip
-        userService.updateUserLoginTimeAndIpByUserId(user.getId(), new Date(), "0.0.0.0");
+        captchaService.deleteCaptcha(requestVo.getVerifyCodeRandom());
+        userService.updateUserLoginTimeAndIpByUserId(user.getId(), new Date(), IpUtil.getIpAddress());
 
         UserLoginResponseVo responseVo = mapperFacade.map(user, UserLoginResponseVo.class);
 
@@ -102,7 +126,6 @@ public class UserServiceFacade {
     }
 
     public void register(UserRegisterRequestVo requestVo) {
-        // TODO: 验证码
         User sameUsernameUser = userService.getNotDeletedUserByUsername(requestVo.getUsername());
         if (sameUsernameUser != null) {
             throw new BusinessException(BusinessErrorEnum.DUPLICATE_USERNAME);
@@ -117,6 +140,7 @@ public class UserServiceFacade {
 
         userService.addUserByRegister(user);
         permissionService.addOrUpdateForumPermission(Permission.getDefaultForumPermission(user.getId()));
+        captchaService.deleteCaptcha(requestVo.getVerifyCodeRandom());
     }
 
     public void updatePersonalUserInfo(UpdatePersonalUserInfoRequestVo requestVo) {
@@ -125,12 +149,11 @@ public class UserServiceFacade {
             throw new BusinessException(BusinessErrorEnum.USER_NOT_LOGIN);
         }
         Long userId = (Long)subject.getPrincipal();
-        userService.updateUserPersonalInfoByUserId(userId, requestVo.getNickname(),
+        userService.updateUserPersonalInfoByUserId(userId, StringUtils.normalizeSpace(requestVo.getNickname()),
                 SexEnum.fromValue(requestVo.getSex()), requestVo.getSignature());
     }
 
     public void updatePersonalPassword(UpdatePersonalPasswordRequestVo requestVo) {
-        // TODO: 邮箱验证码
         Subject subject = SecurityUtils.getSubject();
         if (subject.getPrincipal() == null) {
             throw new BusinessException(BusinessErrorEnum.USER_NOT_LOGIN);
@@ -158,6 +181,7 @@ public class UserServiceFacade {
             subject.logout();
             throw new BusinessException(BusinessErrorEnum.USER_NOT_LOGIN);
         }
+        captchaService.deleteEmailVerifyCode(requestVo.getEmailVerifyCode());
     }
 
     public void deleteUser(Long userId) {
@@ -172,10 +196,16 @@ public class UserServiceFacade {
         // 删除该用户的所有会话
         SessionUtil.removeSessionsByUserId(userId, false);
         userService.deleteUserByUserId(userId);
+
+        // 删除该用户的所有主题帖
+        topicService.batchCascadeDeleteTopic(userId, null, null);
+        // 删除该用户的所有回复帖
+        replyService.batchCascadeDeleteReply(userId, null, null, null);
+        // 删除该用户的所有附件
+        attachmentService.batchDeleteAttachmentByUploaderUserId(userId);
     }
 
     public List<UserSearchResponseVo> getUsernameList(String searchName) {
-        // TODO: 更换排序方式
         List<User> userList = userService.listUsersByName(searchName);
         List<UserSearchResponseVo> responseVoList = mapperFacade.mapAsList(userList, UserSearchResponseVo.class);
         return responseVoList;
@@ -289,6 +319,8 @@ public class UserServiceFacade {
             user.setEmailVerified(false);
         }
 
+        requestVo.setNickname(StringUtils.normalizeSpace(requestVo.getNickname()));
+
         mapperFacade.map(requestVo, user);
         userService.updateUser(user);
 
@@ -323,7 +355,6 @@ public class UserServiceFacade {
 
         Long currentUserId = (Long)SecurityUtils.getSubject().getPrincipal();
         // 如果不是自己的个人中心则隐藏邮箱和邮箱是否已激活
-        // TODO: 判断当前用户是否为管理员
         if (!userId.equals(currentUserId)) {
             responseVo.setEmail(null);
             responseVo.setEmailVerified(null);
@@ -360,28 +391,32 @@ public class UserServiceFacade {
         permissionService.addOrUpdateForumPermission(forumPermission);
     }
 
-    public PageResultVo<UserResponseVo> getUserList(String username, UserTypeEnum userTypeEnum, long pageIndex, long pageSize) {
+    public PageResultVo<UserResponseVo> getUserList(Long userId, String username, UserTypeEnum userTypeEnum, long pageIndex, long pageSize) {
+        User user = userService.getCurrentLoginUser();
+        if (!user.getAdmin() && !user.getId().equals(userId)) {
+            throw new BusinessException(BusinessErrorEnum.UNAUTHORIZED);
+        }
+
         Page<User> page = new Page<>(pageIndex, pageSize);
-        Page<User> pageResult = userService.listNotDeletedUsersByPageAndUsernameAndType(page, userTypeEnum, username);
+        Page<User> pageResult = userService.listNotDeletedUsersByPageAndUsernameAndType(page, userId, userTypeEnum, username);
 
         List<UserResponseVo> responseVoList = mapperFacade.mapAsList(pageResult.getRecords(), UserResponseVo.class);
         responseVoList.forEach(item -> {
-            // TODO: 优化
-            Long userId = item.getId();
+            Long loopUserId = item.getId();
 
             // 设置版主和分区版主
-            List<Board> boardAdminList = boardService.listNotDeletedAdminBoardsByUserId(userId);
-            List<Category> categoryAdminList = categoryService.listNotDeletedAdminCategoriesByUserId(userId);
+            List<Board> boardAdminList = boardService.listNotDeletedAdminBoardsByUserId(loopUserId);
+            List<Category> categoryAdminList = categoryService.listNotDeletedAdminCategoriesByUserId(loopUserId);
 
-            item.setBoardAdmin(mapperFacade.mapAsList(boardAdminList, IdNameResponseVo.class));
-            item.setCategoryAdmin(mapperFacade.mapAsList(categoryAdminList, IdNameResponseVo.class));
+            item.setBoardAdmin(mapperFacade.mapAsList(boardAdminList, BoardResponseVo.class));
+            item.setCategoryAdmin(mapperFacade.mapAsList(categoryAdminList, CategoryResponseVo.class));
 
             // 设置论坛权限
-            Permission forumPermission = permissionService.getForumPermissionByUserId(userId);
+            Permission forumPermission = permissionService.getForumPermissionByUserId(loopUserId);
             item.setForumPermission(mapperFacade.map(forumPermission, PermissionResponseVo.class));
 
             // 设置板块权限
-            List<Permission> boardPermissionList = permissionService.listBoardPermissionsByUserId(userId);
+            List<Permission> boardPermissionList = permissionService.listBoardPermissionsByUserId(loopUserId);
             List<Long> boardIdList = boardPermissionList.stream()
                     .map(Permission::getBoardId)
                     .collect(Collectors.toList());
@@ -460,7 +495,8 @@ public class UserServiceFacade {
                 .orElse(Permission.getDefaultPermission());
 
         // 如果板块是隐藏的则禁止访问
-        boolean banVisit = !boardVisible || forumPermission.getBanVisit() || boardPermission.getBanVisit() || userBoardPermission.getBanVisit();
+        boolean banVisit = !boardVisible || forumPermission.getBanVisit() ||
+                (!isBoardAdmin && boardPermission.getBanVisit()) || userBoardPermission.getBanVisit();
         boolean banCreateTopic = banVisit || (!isBoardAdmin && boardPermission.getBanCreateTopic()) ||
                 forumPermission.getBanCreateTopic() || userBoardPermission.getBanCreateTopic();
         boolean banReply = banVisit || (!isBoardAdmin && boardPermission.getBanReply()) ||
@@ -477,6 +513,11 @@ public class UserServiceFacade {
         responseVo.setBanReply(banReply);
         responseVo.setBanUploadAttachment(banUploadAttachment);
         responseVo.setBanDownloadAttachment(banDownloadAttachment);
+
+        log.debug("forumPermission = {}", forumPermission);
+        log.debug("boardPermission = {}", boardPermission);
+        log.debug("userBoardPermission = {}", userBoardPermission);
+        log.debug("用户：{}，板块：{}，权限：{}", userId, boardId, responseVo);
         return responseVo;
     }
 
@@ -512,6 +553,49 @@ public class UserServiceFacade {
 
         userService.updateUserAvatarByUserId(userId, avatarPath);
         return new AvatarPathResponseVo(avatarPath);
+    }
+
+    public void sendEmailVerifyCode(SendEmailVerifyCodeRequestVo requestVo) {
+        String email = requestVo.getEmail();
+        // 如果邮箱为null则为当前用户登录的邮箱
+        if (email == null) {
+            User user = userService.getCurrentLoginUser();
+            email = user.getEmail();
+        }
+        String emailVerifyCode = captchaService.getEmailVerifyCode();
+        captchaService.storeEmailVerifyCodeToRedis(email, emailVerifyCode);
+        captchaService.deleteCaptcha(requestVo.getVerifyCodeRandom());
+        String text = "邮箱验证码为：" + emailVerifyCode + "，五分钟内有效";
+        emailService.sendEmail(emailSender, email,
+                "论坛系统邮箱验证码", text);
+    }
+
+    public void resetPassword(UserResetPasswordRequestVo requestVo) {
+        User user = userService.getNotDeletedUserByEmail(requestVo.getEmail());
+        if (user == null) {
+            throw new BusinessException(BusinessErrorEnum.USER_NOT_FOUND);
+        }
+        String encryptedPassword = PasswordUtil.encryptPasswordBcrypt(requestVo.getNewPassword());
+        userService.updateUserPasswordByUserId(user.getId(), encryptedPassword);
+        SessionUtil.removeSessionsByUserId(user.getId(), true);
+        captchaService.deleteEmailVerifyCode(requestVo.getEmail());
+    }
+
+    public void verifyEmail(UserVerifyEmailRequestVo requestVo) {
+        User user = userService.getCurrentLoginUser();
+        userService.updateUserEmailVerifiedByUserId(user.getId());
+        captchaService.deleteEmailVerifyCode(user.getEmail());
+    }
+
+    public void updateEmail(UserUpdateEmailRequestVo requestVo) {
+        User user = userService.getCurrentLoginUser();
+        if (!PasswordUtil.checkPasswordBcrypt(requestVo.getPassword(), user.getPassword())) {
+            throw new BusinessException(BusinessErrorEnum.WRONG_OLD_PASSWORD);
+        }
+
+        userService.updateUserEmailByUserId(user.getId(), requestVo.getEmail());
+        userService.updateUserEmailVerifiedByUserId(user.getId());
+        captchaService.deleteEmailVerifyCode(requestVo.getEmail());
     }
 
 }

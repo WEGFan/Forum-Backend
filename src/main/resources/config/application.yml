@@ -1,6 +1,7 @@
 spring:
   profiles:
     active: 'dev'
+    include: 'secret'
   jackson:
     date-format: 'yyyy-MM-dd HH:mm:ss'
     time-zone: 'GMT+8'
@@ -22,6 +23,18 @@ spring:
       time-to-live: '1d'
       key-prefix: 'forum:'
     type: 'redis'
+  mail:
+    properties:
+      mail:
+        smtp:
+          port: 465
+          auth: true
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+            ssl:
+              enable: true
+    default-encoding: utf-8
+
 
 mybatis-plus:
   configuration:
@@ -32,10 +45,16 @@ mybatis-plus:
   global-config:
     db-config:
       id-type: 'auto'
-      update-strategy: 'ignored'
+      update-strategy: 'not_null'
       column-format: '`%s`'
   type-enums-package: 'cn.wegfan.forum.constant'
   type-aliases-package: 'cn.wegfan.forum.model.entity'
 
 logging:
   config: 'classpath:logback-spring.xml'
+
+server:
+  tomcat:
+    threads:
+      max: 20
+    max-connections: 100

@@ -29,6 +29,12 @@
         WHERE id = #{boardId}
     </update>
 
+    <update id="deleteByCategoryId">
+        UPDATE board
+        SET delete_time = now()
+        WHERE category_id = #{categoryId}
+    </update>
+
     <select id="selectNotDeletedAdminBoardListByUserId" resultType="Board">
         SELECT board.*
         FROM board,
@@ -87,10 +93,8 @@
              board
                  LEFT JOIN category ON board.category_id = category.id
         WHERE board.delete_time IS NULL
-            AND board.visible = 1
-            AND category.visible = 1
-           OR user.id = #{userId}
-            AND (user.admin = 1 OR user.super_board_admin = 1)
+          AND (board.visible = 1 AND category.visible = 1
+            OR user.id = #{userId} AND (user.admin = 1 OR user.super_board_admin = 1))
         UNION
         (
             SELECT board.*, category.id AS c_id, category.order AS c_order

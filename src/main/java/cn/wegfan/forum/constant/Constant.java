@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.http.MediaType;
+import org.springframework.util.unit.DataSize;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -88,5 +89,20 @@ public class Constant {
      * 获取图片文件接口地址
      */
     public static final String IMAGE_API_ENDPOINT = "/api/file/image/";
+
+    /**
+     * 附件最大大小
+     */
+    public static final DataSize MAX_ATTACHMENT_SIZE = DataSize.ofMegabytes(2);
+
+    /**
+     * 主题帖列表最大图片数量
+     */
+    public static final int TOPIC_LIST_MAX_IMAGE_COUNT = 3;
+
+    /**
+     * 图片最大大小
+     */
+    public static final DataSize MAX_IMAGE_SIZE = DataSize.ofMegabytes(5);
 
 }

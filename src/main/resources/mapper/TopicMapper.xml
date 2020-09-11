@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.wegfan.forum.mapper.TopicMapper">
+    <select id="selectNotDeletedByTopicId" resultType="Topic">
+        SELECT *
+        FROM topic
+        WHERE delete_time IS NULL
+          AND id = #{topicId}
+    </select>
+
+    <select id="selectNotDeletedByPage" resultType="Topic">
+        SELECT *
+        FROM topic
+        WHERE delete_time IS NULL
+        <if test="boardIdList != null">
+            AND board_id IN
+            <foreach collection="boardIdList" open="(" separator="," close=")" item="boardId">
+                #{boardId}
+            </foreach>
+        </if>
+        <if test="submitterUserId != null">
+            AND submitter_user_id = #{submitterUserId}
+        </if>
+        <if test="startTime != null">
+            AND submit_time >= #{startTime}
+        </if>
+        <if test="endTime != null">
+            AND submit_time &lt;= #{endTime}
+        </if>
+        <choose>
+            <when test="typeEnum.ordinal() == @cn.wegfan.forum.constant.TopicListTypeEnum@NORMAL_AND_FEATURED.ordinal()">
+                AND pinned = 0
+                AND type = ${@cn.wegfan.forum.constant.TopicTypeEnum@NORMAL.getEnumValue()}
+            </when>
+            <when test="typeEnum.ordinal() == @cn.wegfan.forum.constant.TopicListTypeEnum@FEATURED.ordinal()">
+                AND featured = 1
+                AND pinned = 0
+                AND type = ${@cn.wegfan.forum.constant.TopicTypeEnum@NORMAL.getEnumValue()}
+            </when>
+            <when test="typeEnum.ordinal() == @cn.wegfan.forum.constant.TopicListTypeEnum@PINNED.ordinal()">
+                AND pinned = 1
+                AND type = ${@cn.wegfan.forum.constant.TopicTypeEnum@NORMAL.getEnumValue()}
+            </when>
+            <when test="typeEnum.ordinal() == @cn.wegfan.forum.constant.TopicListTypeEnum@ANNOUNCEMENT.ordinal()">
+                AND type = ${@cn.wegfan.forum.constant.TopicTypeEnum@ANNOUNCEMENT.getEnumValue()}
+            </when>
+            <otherwise />
+        </choose>
+        <if test="keyword != null and keyword.trim() != ''">
+            AND title like concat('%', #{keyword}, '%')
+        </if>
+        ORDER BY ${sortEnum.getOrderBySql()}
+    </select>
+
+    <update id="batchCascadeDelete">
+        UPDATE topic
+        SET delete_time = now()
+        WHERE delete_time IS NULL
+        <if test="submitterUserId != null">
+            AND submitter_user_id = #{submitterUserId}
+        </if>
+        <if test="categoryId != null">
+            AND category_id = #{categoryId}
+        </if>
+        <if test="boardId != null">
+            AND board_id = #{boardId}
+        </if>
+    </update>
+
+    <update id="deleteByTopicId">
+        UPDATE topic
+        SET delete_time = now()
+        WHERE id = #{topicId}
+    </update>
+
+    <update id="batchManageByTopicIdListAndAction">
+        UPDATE topic
+        <set>
+            <if test="actionEnum.ordinal() == @cn.wegfan.forum.constant.ManageTopicActionEnum@PIN.ordinal()">
+                pinned = 1,
+            </if>
+            <if test="actionEnum.ordinal() == @cn.wegfan.forum.constant.ManageTopicActionEnum@UNPIN.ordinal()">
+                pinned = 0,
+            </if>
+            <if test="actionEnum.ordinal() == @cn.wegfan.forum.constant.ManageTopicActionEnum@FEATURE.ordinal()">
+                featured = 1,
+            </if>
+            <if test="actionEnum.ordinal() == @cn.wegfan.forum.constant.ManageTopicActionEnum@UNFEATURE.ordinal()">
+                featured = 0,
+            </if>
+            <if test="actionEnum.ordinal() == @cn.wegfan.forum.constant.ManageTopicActionEnum@DELETE.ordinal()">
+                delete_time = now()
+            </if>
+        </set>
+        WHERE id IN
+        <foreach collection="topicIdList" open="(" separator="," close=")" item="topicId">
+            #{topicId}
+        </foreach>
+    </update>
+
+    <update id="increaseTopicViewCountByTopicId">
+        UPDATE topic
+        SET view_count = view_count + 1
+        WHERE id = #{topicId}
+    </update>
+
+    <update id="increaseTopicReplyCountByTopicId">
+        UPDATE topic
+        SET reply_count = reply_count + 1
+        WHERE id = #{topicId}
+    </update>
+</mapper>

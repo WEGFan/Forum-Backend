@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.wegfan.forum.mapper.AttachmentMapper">
+    <select id="selectNotDeletedByAttachmentId" resultType="Attachment">
+        SELECT *
+        FROM attachment
+        WHERE delete_time IS NULL
+          AND id = #{attachmentId}
+    </select>
+
+    <select id="selectNotDeletedListByTopicId" resultType="Attachment">
+        SELECT *
+        FROM attachment
+        WHERE delete_time IS NULL
+          AND topic_id = #{topicId}
+    </select>
+
+    <select id="selectNotDeletedByFilePath" resultType="Attachment">
+        SELECT *
+        FROM attachment
+        WHERE delete_time IS NULL
+          AND file_path = #{filePath}
+    </select>
+
+    <update id="updateDescriptionByAttachmentId">
+        UPDATE attachment
+        SET description = #{description}
+        WHERE id = #{attachmentId}
+    </update>
+
+    <update id="increaseDownloadCountByAttachmentId">
+        UPDATE attachment
+        SET download_count = download_count + 1
+        WHERE id = #{attachmentId}
+    </update>
+
+    <select id="selectNotDeletedListByPage" resultType="Attachment">
+        SELECT *
+        FROM attachment
+        WHERE delete_time IS NULL
+        AND board_id IS NOT NULL
+        AND topic_id IS NOT NULL
+        <if test="boardId != null">
+            AND board_id = #{boardId}
+        </if>
+        <if test="uploaderUserId != null">
+            AND uploader_user_id = #{uploaderUserId}
+        </if>
+        <if test="startTime != null">
+            AND upload_time >= #{startTime}
+        </if>
+        <if test="endTime != null">
+            AND upload_time &lt;= #{endTime}
+        </if>
+        <if test="filename != null and filename.trim() != ''">
+            AND filename LIKE concat('%', #{filename}, '%')
+        </if>
+    </select>
+
+    <update id="deleteByAttachmentId">
+        UPDATE attachment
+        SET delete_time = now()
+        WHERE id = #{attachmentId}
+    </update>
+
+    <update id="deleteByTopicId">
+        UPDATE attachment
+        SET delete_time = now()
+        WHERE topic_id = #{topicId}
+    </update>
+
+    <update id="deleteByBoardId">
+        UPDATE attachment
+        SET delete_time = now()
+        WHERE board_id = #{boardId}
+    </update>
+
+    <update id="deleteByUploaderUserId">
+        UPDATE attachment
+        SET delete_time = now()
+        WHERE uploader_user_id = #{uploaderUserId}
+    </update>
+
+    <update id="deleteByCategoryId">
+        UPDATE attachment, board
+        SET attachment.delete_time = now()
+        WHERE attachment.board_id = board.id
+          AND board.category_id = #{categoryId}
+    </update>
+</mapper>

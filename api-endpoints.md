@@ -248,7 +248,7 @@ null
 ```json5
 {
     "email": "a@a.cn", // 邮箱，为null的话表示当前登录用户的邮箱
-    "verifyCode": "abcd", // 图形验证码，邮箱不为null的时候必填，4位
+    "verifyCode": "abcd", // 图形验证码，必填，4位
     "verifyCodeRandom": "sOdQceeE" // 获取验证码时的随机字符串
 }
 ```
@@ -271,10 +271,9 @@ null
 
 ```json5
 {
+    "email": "a@a.cn", // 邮箱
     "emailVerifyCode": "abcdef", // 邮箱验证码，必填，6位
-    "newPassword": "aaaaaa", // 新密码，必填，6-20位
-    "verifyCode": "abcd", // 图形验证码，必填，4位
-    "verifyCodeRandom": "sOdQceeE" // 获取验证码时的随机字符串
+    "newPassword": "aaaaaa" // 新密码，必填，6-20位
 }
 ```
 
@@ -440,9 +439,9 @@ null
 
 ```json5
 {
-    "oldEmailVerifyCode": "abcdef", // 旧邮箱的验证码，必填，6位
-    "newEmail": "b@a.cn", // 新邮箱地址，必填，后端校验
-    "newEmailVerifyCode": "abcdef" // 新邮箱的验证码，必填，6位
+    "password": "abcdef", // 密码，必填，6-20位
+    "email": "b@a.cn", // 新邮箱地址，必填，后端校验
+    "emailVerifyCode": "abcdef" // 新邮箱的验证码，必填，6位
 }
 ```
 
@@ -483,7 +482,7 @@ null
 
 ### 【管理】查看用户列表
 
-`GET /api/user/user-list?username=&userType=&page=&count=`
+`GET /api/user/user-list?userId=&username=&userType=&page=&count=`
 
 #### 权限
 
@@ -493,6 +492,7 @@ null
 
 | 字段名   | 字段类型 | 必填 | 含义                         | 样例  |
 | -------- | -------- | ---- | ---------------------------- | ----- |
+| userId   | int      | 否   | 按用户编号精确筛选           | 1     |
 | username | string   | 否   | 按用户名模糊筛选             | admin |
 | userType | string   | 否   | 按用户类型筛选，默认为 `all` | user  |
 | page     | int      | 是   | 页码                         | 1     |
@@ -964,7 +964,7 @@ null
 | -------- | -------- | ---- | --------------------------------- | ------------------- |
 | boardId  | int      | 否   | 按板块编号筛选                    | 1                   |
 | username | string   | 否   | 按发帖者用户名精确筛选            | a                   |
-| type     | string   | 否   | 按主题帖类型筛选，默认为 `normal` | normal              |
+| type     | string   | 否   | 按主题帖类型筛选，默认为 `all` | normal              |
 | keyword  | string   | 否   | 按标题关键字筛选                  | a                   |
 | from     | datetime | 否   | 按发帖开始时间筛选                | 2020-01-01 00:00:00 |
 | to       | datetime | 否   | 按发帖结束时间筛选                | 2020-01-05 23:59:59 |
@@ -1046,9 +1046,10 @@ null
     "content": "a <b>a</b> <img src='a.jpg' /> eeee", // 内容
     "submitTime": "2020-08-04 16:00:00", // 发帖时间
     "submitterUserId": 1, // 发帖人用户编号
+    "submitterUsername": "a", // 发帖人用户名
     "submitterNickname": "a", // 发帖人昵称
-    "submitterSignature": "a", // 发帖人个人签名
     "submitterAvatarPath": "/api/file/avatar/xxx.jpg", // 发帖人头像地址
+    "submitterIp": "1.1.1.1", // 发帖者IP
     "boardId": 1, // 板块编号
     "boardName": "a", // 板块名称
     "categoryId": 1, // 分区编号
@@ -1057,12 +1058,16 @@ null
     "replyCount": 1, // 回复数
     "lastReplyTime": "2020-08-04 16:00:00", // 最后回复时间
     "lastReplierUserId": 1, // 最后回复者用户编号
+    "lastReplierUsername": "a", // 最后回复者用户名
     "lastReplierNickname": "a", // 最后回复者昵称
+    "lastReplierIp": "1.1.1.1", // 最后回复者IP
     "pinned": false, // 是否置顶
     "featured": false, // 是否精华
     "editTime": "2020-08-04 20:00:00", // 最后编辑时间，无编辑则为null
     "editorUserId": 2, // 最后编辑者用户编号，无编辑则为null
+    "editorUsername": "a", // 最后编辑者用户名，无编辑则为null
     "editorNickname": "a", // 最后编辑者昵称，无编辑则为null
+    "editorIp": "1.1.1.1", // 最后编辑者IP，无编辑则为null
     "attachments": [ // 附件
         {
             "id": 1, // 附件编号
@@ -1129,6 +1134,7 @@ null
 ```json5
 {
     "topicId": 1, // 主题帖编号
+    "type": 0, // 主题类型，0-普通主题，1-公告
     "title": "a", // 标题，必填，最大120字符
     "content": "a", // 内容，必填，最大150000字符
     "attachments": [ // 附件列表，最多10个附件，通过上传附件获取编号
@@ -1231,8 +1237,9 @@ null
 [
     {
         "operatorUserId": 1, // 操作者用户编号
-        "operatorNickname": "a", // 操作者昵称
+        "operatorUsername": "a", // 操作者用户名
         "operatorIp": "5.5.5.5", // 操作者IP
+        "operateType": "置顶主题", // 操作类型
         "reason": "a", // 操作原因
         "operateTime": "2020-08-05 23:30:00" // 操作时间
     }
@@ -1243,7 +1250,7 @@ null
 
 ### 查看指定主题帖的回复帖
 
-`GET /api/reply/topic-reply-list?topicId=&page=&count=`
+`GET /api/reply/topic-reply-list?topicId=&submitterOnly=&sort=&page=&count=`
 
 #### 权限
 
@@ -1251,11 +1258,20 @@ null
 
 #### 参数
 
-| 字段名  | 字段类型 | 必填 | 含义                   | 样例 |
-| ------- | -------- | ---- | ---------------------- | ---- |
-| topicId | int      | 是   | 主题帖编号             | 1    |
-| page    | int      | 是   | 页码                   | 1    |
-| count   | int      | 是   | 一次获取的个数，上限20 | 20   |
+| 字段名        | 字段类型 | 必填 | 含义                                 | 样例   |
+| ------------- | -------- | ---- | ------------------------------------ | ------ |
+| topicId       | int      | 是   | 主题帖编号                           | 1      |
+| submitterOnly | boolean  | 否   | 是否只看发帖者的回复，默认为 `false` | true   |
+| sort          | string   | 否   | 排序方式，默认为 `normal`            | normal |
+| page          | int      | 是   | 页码                                 | 1      |
+| count         | int      | 是   | 一次获取的个数，上限20               | 20     |
+
+排序方式：
+
+| sort   | 含义         |
+| -------- | ------------ |
+| normal   | 回帖时间升序 |
+| reversed | 回帖时间降序 |
 
 #### 操作成功时返回对象
 
@@ -1267,7 +1283,6 @@ null
         "replyTime": "2020-08-04 16:00:00", // 回复时间
         "replierUserId": 1, // 回复者用户编号
         "replierNickname": "a", // 回复者昵称
-        "replierSignature": "a", // 回复者个人签名
         "replierAvatarPath": "/api/file/avatar/xxx.jpg", // 回复者头像地址
         "editTime": "2020-08-04 16:00:00", // 最后编辑时间
         "editorUserId": 1, // 编辑者用户编号
@@ -1297,7 +1312,7 @@ null
 ```json5
 [
     {
-        "id": 1, // 主题帖编号
+        "id": 1, // 回复帖编号
         "shortContent": "a a [图片] eeee", // 短内容，纯文字
         "topicId": 1, // 所属主题帖编号
         "topicTitle": "a", // 所属主题帖标题
@@ -1313,7 +1328,7 @@ null
 
 ### 【管理】查看所有回复帖列表
 
-`GET /api/reply/reply-list?boardId=&username=&keyword=&from=&to=&page=&count=`
+`GET /api/reply/reply-list?boardId=&topicId=&username=&keyword=&from=&to=&page=&count=`
 
 #### 权限
 
@@ -1324,8 +1339,9 @@ null
 | 字段名   | 字段类型 | 必填 | 含义                   | 样例                |
 | -------- | -------- | ---- | ---------------------- | ------------------- |
 | boardId  | int      | 否   | 按所属板块编号筛选     | 1                   |
+| topicId | int | 否 | 按所属主题帖筛选 |1|
 | username | string   | 否   | 按发帖者用户名筛选     | a                   |
-| keyword  | string   | 否   | 按标题关键字筛选       | a                   |
+| keyword  | string   | 否   | 按内容关键字筛选       | a                   |
 | from     | datetime | 否   | 按发帖开始时间筛选     | 2020-01-01 00:00:00 |
 | to       | datetime | 否   | 按发帖结束时间筛选     | 2020-01-05 23:59:59 |
 | page     | int      | 是   | 页码                   | 1                   |
@@ -1336,7 +1352,7 @@ null
 ```json5
 [
     {
-        "id": 1, // 主题帖编号
+        "id": 1, // 回复帖编号
         "content": "a <b>a</b> <img src='a.jpg' /> eeee", // 内容
         "shortContent": "a a [图片] eeee", // 短内容，纯文字
         "topicId": 1, // 所属主题帖编号

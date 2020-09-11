@@ -34,7 +34,6 @@ public class UserLoginRequestVo implements Serializable {
      * 图形验证码 4位
      */
     @NotNull
-    @NotBlank
     @Length(min = 4, max = 4, message = "验证码错误")
     private String verifyCode;
 

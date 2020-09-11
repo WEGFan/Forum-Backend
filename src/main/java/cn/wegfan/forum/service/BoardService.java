@@ -21,6 +21,8 @@ public interface BoardService extends IService<Board> {
 
     int deleteBoardByBoardId(Long boardId);
 
+    int deleteBoardByCategoryId(Long categoryId);
+
     List<Board> listNotDeletedAdminBoardsByUserId(Long userId);
 
     List<Board> batchListNotDeletedBoardsByBoardIds(List<Long> idList);
@@ -32,6 +34,8 @@ public interface BoardService extends IService<Board> {
     Page<Board> listNotDeletedAllAdminBoardsByPageAndUserId(Page<?> page, Long userId, BoardListSortEnum sortEnum);
 
     List<Board> listNotDeletedAllAdminBoardsByUserId(Long userId, BoardListSortEnum sortEnum);
+
+    List<Long> listNotDeletedAllAdminBoardIdsByUserId(Long userId);
 
     List<Board> listHomepageBoardsByUserId(Long userId);
 

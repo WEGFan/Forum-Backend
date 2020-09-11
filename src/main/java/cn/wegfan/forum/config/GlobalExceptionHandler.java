@@ -1,5 +1,6 @@
 package cn.wegfan.forum.config;
 
+import cn.hutool.core.io.IORuntimeException;
 import cn.wegfan.forum.constant.BusinessErrorEnum;
 import cn.wegfan.forum.model.vo.response.ResultVo;
 import cn.wegfan.forum.util.BusinessException;
@@ -10,6 +11,7 @@ import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.mail.MailException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -36,6 +38,24 @@ public class GlobalExceptionHandler {
 
     @Autowired
     private HttpServletRequest request;
+
+    /**
+     * 处理IO异常
+     */
+    @ExceptionHandler(IORuntimeException.class)
+    public ResultVo handleIoRuntimeException(IORuntimeException e) {
+        log.warn("<{}> IO异常：{}", request.getRequestURI(), e.getMessage());
+        return ResultVo.businessError(new BusinessException(BusinessErrorEnum.FILE_NOT_FOUND));
+    }
+
+    /**
+     * 处理发送邮件失败
+     */
+    @ExceptionHandler(MailException.class)
+    public ResultVo handleMailException(MailException e) {
+        log.error("<{}> 发送邮件失败：{}", request.getRequestURI(), e.getMessage());
+        return ResultVo.businessError(new BusinessException(BusinessErrorEnum.SEND_MAIL_FAILED));
+    }
 
     /**
      * 处理上传文件大小超过限制

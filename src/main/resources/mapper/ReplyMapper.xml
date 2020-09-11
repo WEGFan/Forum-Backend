@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="cn.wegfan.forum.mapper.ReplyMapper">
+    <select id="selectByReplyId" resultType="Reply">
+        SELECT *
+        FROM reply
+        WHERE delete_time IS NULL
+          AND id = #{replyId}
+    </select>
+
+    <select id="selectNotDeletedListByTopicIdAndPage" resultType="Reply">
+        SELECT *
+        FROM reply
+        WHERE delete_time IS NULL
+        AND topic_id = #{topicId}
+        <if test="replierUserId != null">
+            AND replier_user_id = #{replierUserId}
+        </if>
+        ORDER BY ${sortEnum.getOrderBySql()}
+    </select>
+
+    <select id="selectNotDeletedListByPageAndReplierUserId" resultType="Reply">
+        SELECT *
+        FROM reply
+        WHERE delete_time IS NULL
+          AND replier_user_id = #{replierUserId}
+        ORDER BY reply_time DESC
+    </select>
+
+    <select id="selectNotDeletedListByPage" resultType="Reply">
+        SELECT * FROM reply
+        WHERE delete_time IS NULL
+        <if test="topicId != null">
+            AND topic_id = #{topicId}
+        </if>
+        <if test="boardId != null">
+            AND board_id = #{boardId}
+        </if>
+        <if test="replierUserId != null">
+            AND replier_user_id = #{replierUserId}
+        </if>
+        <if test="startTime != null">
+            AND reply_time >= #{startTime}
+        </if>
+        <if test="endTime != null">
+            AND reply_time &lt;= #{endTime}
+        </if>
+        <if test="keyword != null and keyword.trim() != ''">
+            AND content_text LIKE concat('%', #{keyword}, '%')
+        </if>
+    </select>
+
+    <update id="batchCascadeDelete">
+        UPDATE reply
+        SET delete_time = now()
+        WHERE delete_time IS NULL
+        <if test="topicId != null">
+            AND topic_id = #{topicId}
+        </if>
+        <if test="replierUserId != null">
+            AND replier_user_id = #{replierUserId}
+        </if>
+        <if test="categoryId != null">
+            AND category_id = #{categoryId}
+        </if>
+        <if test="boardId != null">
+            AND board_id = #{boardId}
+        </if>
+    </update>
+</mapper>

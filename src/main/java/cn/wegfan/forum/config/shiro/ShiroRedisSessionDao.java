@@ -34,8 +34,7 @@ public class ShiroRedisSessionDao extends AbstractSessionDAO {
         assignSessionId(session, sessionId);
         String key = getKey(session.getId().toString());
         // 放入 redis 缓存
-        redisTemplate.opsForValue().set(key, session);
-        redisTemplate.expire(key, Duration.ofDays(1));
+        redisTemplate.opsForValue().set(key, session, Duration.ofDays(1));
         return sessionId;
     }
 
@@ -57,8 +56,7 @@ public class ShiroRedisSessionDao extends AbstractSessionDAO {
         }
         String key = getKey(session.getId().toString());
         // 根据传入 session 中的 sessionId 更新缓存中的 session
-        redisTemplate.opsForValue().set(key, session);
-        redisTemplate.expire(key, Duration.ofDays(1));
+        redisTemplate.opsForValue().set(key, session, Duration.ofDays(1));
     }
 
     @Override

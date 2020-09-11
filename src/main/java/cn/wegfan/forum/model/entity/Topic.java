@@ -89,6 +89,11 @@ public class Topic implements Serializable {
     private Long lastReplierUserId;
 
     /**
+     * 最后回复者IP
+     */
+    private String lastReplierIp;
+
+    /**
      * 是否置顶
      */
     private Boolean pinned;

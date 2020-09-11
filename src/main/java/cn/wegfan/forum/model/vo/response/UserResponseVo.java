@@ -94,12 +94,12 @@ public class UserResponseVo implements Serializable {
     /**
      * 管理的板块
      */
-    private List<IdNameResponseVo> boardAdmin;
+    private List<BoardResponseVo> boardAdmin;
 
     /**
      * 管理的分区
      */
-    private List<IdNameResponseVo> categoryAdmin;
+    private List<CategoryResponseVo> categoryAdmin;
 
     /**
      * 论坛权限

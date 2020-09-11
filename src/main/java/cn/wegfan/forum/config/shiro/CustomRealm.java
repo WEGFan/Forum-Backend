@@ -1,5 +1,6 @@
 package cn.wegfan.forum.config.shiro;
 
+import cn.wegfan.forum.constant.Constant;
 import cn.wegfan.forum.model.entity.User;
 import cn.wegfan.forum.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +9,7 @@ import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,14 @@ public class CustomRealm extends AuthorizingRealm {
     @Autowired
     private UserService userService;
 
+    public CustomRealm() {
+        super();
+        setCredentialsMatcher(new BcryptCredentialsMatcher());
+        setCachingEnabled(false);
+        setAuthenticationCachingEnabled(false);
+        setAuthorizationCachingEnabled(false);
+    }
+
     @Override
     public String getName() {
         return "CustomRealm";
@@ -27,8 +37,15 @@ public class CustomRealm extends AuthorizingRealm {
 
     @Override
     public AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        // TODO
-        return null;
+        User user = userService.getCurrentLoginUser();
+        if (user == null) {
+            return null;
+        }
+        SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+        if (user.getAdmin()) {
+            info.addStringPermission(Constant.SHIRO_PERMISSION_ADMIN);
+        }
+        return info;
     }
 
     @Override

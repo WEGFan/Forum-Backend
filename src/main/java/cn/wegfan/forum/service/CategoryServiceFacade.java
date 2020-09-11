@@ -15,11 +15,13 @@ import ma.glasnost.orika.MapperFacade;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @Slf4j
+@Transactional(rollbackFor = Exception.class)
 public class CategoryServiceFacade {
 
     @Autowired
@@ -30,6 +32,21 @@ public class CategoryServiceFacade {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private BoardService boardService;
+
+    @Autowired
+    private TopicService topicService;
+
+    @Autowired
+    private ReplyService replyService;
+
+    @Autowired
+    private AttachmentService attachmentService;
+
+    @Autowired
+    private CategoryAdminService categoryAdminService;
 
     public PageResultVo<CategoryResponseVo> getAdminCategoryList(CategoryListSortEnum sortEnum, long pageIndex, long pageSize) {
         Long userId = (Long)SecurityUtils.getSubject().getPrincipal();
@@ -78,13 +95,23 @@ public class CategoryServiceFacade {
         return categoryService.updateCategory(category);
     }
 
-    public int deleteCategory(Long categoryId) {
-        // TODO: 删除分区内的板块、帖子、回复、分区版主
+    public void deleteCategory(Long categoryId) {
         Category category = categoryService.getNotDeletedCategoryByCategoryId(categoryId);
         if (category == null) {
             throw new BusinessException(BusinessErrorEnum.CATEGORY_NOT_FOUND);
         }
-        return categoryService.deleteCategoryByCategoryId(categoryId);
+        // 删除分区
+        categoryService.deleteCategoryByCategoryId(categoryId);
+        // 删除分区的分区版主
+        categoryAdminService.deleteCategoryAdminByCategoryId(categoryId);
+        // 删除分区的板块
+        boardService.deleteBoardByCategoryId(categoryId);
+        // 删除分区的主题
+        topicService.batchCascadeDeleteTopic(null, categoryId, null);
+        // 删除分区的回复帖
+        replyService.batchCascadeDeleteReply(null, null, categoryId, null);
+        // 删除分区的附件
+        attachmentService.deleteAttachmentByCategoryId(categoryId);
     }
 
 }

@@ -62,8 +62,6 @@ public class ShiroConfig {
     @Bean
     public Realm realm() {
         CustomRealm customRealm = new CustomRealm();
-        customRealm.setCredentialsMatcher(new BcryptCredentialsMatcher());
-        customRealm.setCachingEnabled(true);
         return customRealm;
     }
 
@@ -82,11 +80,14 @@ public class ShiroConfig {
 
         // 自定义登录过滤器，授权失败返回json
         Map<String, Filter> filterMap = new LinkedHashMap<>();
+        filterMap.put("user", new CustomLoginFilter());
         filterMap.put("authc", new CustomLoginFilter());
         shiroFilterFactoryBean.setFilters(filterMap);
 
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
-        // TODO: 设置controller的权限
+        filterChainDefinitionMap.put("/api/**", "anon");
+        filterChainDefinitionMap.put("/**", "user");
+
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 
         return shiroFilterFactoryBean;

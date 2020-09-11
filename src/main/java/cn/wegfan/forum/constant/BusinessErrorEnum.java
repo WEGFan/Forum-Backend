@@ -31,7 +31,12 @@ public enum BusinessErrorEnum {
     ACCOUNT_DISABLED(10013, "帐号被禁用"),
     UPLOAD_FILE_TYPE_NOT_ALLOWED(10019, "文件类型不正确"),
     WRONG_AVATAR_SIZE(10020, "头像尺寸不正确"),
-    UPLOAD_FILE_TOO_LARGE(10018, "上传的文件过大");
+    UPLOAD_FILE_TOO_LARGE(10018, "上传的文件过大"),
+    TOPIC_NOT_FOUND(10021, "主题帖不存在"),
+    FILE_NOT_FOUND(10022, "文件不存在"),
+    ATTACHMENT_NOT_FOUND(10023, "附件不存在"),
+    REPLY_NOT_FOUND(10024, "回复不存在"),
+    SEND_MAIL_FAILED(10025, "邮件发送失败");
 
     /**
      * 错误代码

@@ -17,6 +17,7 @@ import ma.glasnost.orika.MapperFacade;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@Transactional(rollbackFor = Exception.class)
 public class BoardServiceFacade {
 
     @Autowired
@@ -45,6 +47,15 @@ public class BoardServiceFacade {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private TopicService topicService;
+
+    @Autowired
+    private ReplyService replyService;
+
+    @Autowired
+    private AttachmentService attachmentService;
 
     public PageResultVo<BoardResponseVo> getAdminBoardList(BoardListSortEnum sortEnum, long pageIndex, long pageSize) {
         Long userId = (Long)SecurityUtils.getSubject().getPrincipal();
@@ -146,13 +157,19 @@ public class BoardServiceFacade {
     }
 
     public int deleteBoard(Long boardId) {
-        // TODO: 删除板块内的帖子、回复、版主
         Board board = boardService.getNotDeletedBoardByBoardId(boardId);
         if (board == null) {
             throw new BusinessException(BusinessErrorEnum.BOARD_NOT_FOUND);
         }
         int result = boardService.deleteBoardByBoardId(boardId);
+        // 删除版主
         boardAdminService.deleteBoardAdminByBoardId(boardId);
+        // 删除板块里的主题
+        topicService.batchCascadeDeleteTopic(null, null, boardId);
+        // 删除板块里的回复
+        replyService.batchCascadeDeleteReply(null, null, null, boardId);
+        // 删除板块里的附件
+        attachmentService.batchDeleteAttachmentByBoardIds(Collections.singletonList(boardId));
         return result;
     }
 

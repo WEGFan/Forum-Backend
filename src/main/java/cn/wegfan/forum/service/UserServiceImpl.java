@@ -33,6 +33,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private MapperFacade mapperFacade;
 
     @Override
+    public long countNotDeletedUsers() {
+        return userMapper.countNotDeletedUser();
+    }
+
+    @Override
+    public User getUserByUserId(Long userId) {
+        return userMapper.selectByUserId(userId);
+    }
+
+    @Override
     public User getCurrentLoginUser() {
         Long userId = (Long)SecurityUtils.getSubject().getPrincipal();
         return userMapper.selectNotDeletedByUserId(userId);
@@ -60,8 +70,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public int addUserByRegister(User user) {
-        // TODO: 换一种删空格方式
-        user.setNickname(StringUtils.deleteWhitespace(user.getNickname()));
+        user.setNickname(StringUtils.normalizeSpace(user.getNickname()));
         user.setEmailVerified(false);
         user.setSex(SexEnum.SECRET);
         user.setSignature("");
@@ -78,8 +87,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public int addUserByAdmin(User user) {
-        // TODO: 换一种删空格方式
-        user.setNickname(StringUtils.deleteWhitespace(user.getNickname()));
+        user.setNickname(StringUtils.normalizeSpace(user.getNickname()));
         user.setEmailVerified(false);
         user.setSex(SexEnum.SECRET);
         user.setSignature("");
@@ -121,7 +129,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public Page<User> listNotDeletedUsersByPageAndUsernameAndType(Page<?> page, UserTypeEnum userType, String username) {
+    public Page<User> listNotDeletedUsersByPageAndUsernameAndType(Page<?> page, Long userId, UserTypeEnum userType, String username) {
         if (StringUtils.isEmpty(username)) {
             username = null;
         } else {
@@ -131,22 +139,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         switch (userType) {
             case NORMAL_USER:
-                return userMapper.selectNotDeletedNormalUserListByPageAndUsername(page, username);
+                return userMapper.selectNotDeletedNormalUserListByPageAndUsername(page, username, userId);
             case BOARD_ADMIN:
-                return userMapper.selectNotDeletedBoardAdminListByPageAndUsername(page, username);
+                return userMapper.selectNotDeletedBoardAdminListByPageAndUsername(page, username, userId);
             case CATEGORY_ADMIN:
-                return userMapper.selectNotDeletedCategoryAdminListByPageAndUsername(page, username);
+                return userMapper.selectNotDeletedCategoryAdminListByPageAndUsername(page, username, userId);
             case SUPER_BOARD_ADMIN:
-                return userMapper.selectNotDeletedSuperBoardAdminListByPageAndUsername(page, username);
+                return userMapper.selectNotDeletedSuperBoardAdminListByPageAndUsername(page, username, userId);
             case ADMIN:
-                return userMapper.selectNotDeletedAdminListByPageAndUsername(page, username);
+                return userMapper.selectNotDeletedAdminListByPageAndUsername(page, username, userId);
             case BAN_VISIT:
-                return userMapper.selectNotDeletedBanVisitListByPageAndUsername(page, username);
+                return userMapper.selectNotDeletedBanVisitListByPageAndUsername(page, username, userId);
             case BAN_REPLY:
-                return userMapper.selectNotDeletedBanCreateTopicAndReplyListByPageAndUsername(page, username);
+                return userMapper.selectNotDeletedBanCreateTopicAndReplyListByPageAndUsername(page, username, userId);
             case ALL:
             default:
-                return userMapper.selectNotDeletedUserListByPageAndUsername(page, username);
+                return userMapper.selectNotDeletedUserListByPageAndUsername(page, username, userId);
         }
     }
 
@@ -163,6 +171,26 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public int updateUserAvatarByUserId(Long userId, String avatarPath) {
         return userMapper.updateUserAvatarByUserId(userId, avatarPath);
+    }
+
+    @Override
+    public int increaseUserTopicCountByUserId(Long userId) {
+        return userMapper.increaseUserTopicCountByUserId(userId);
+    }
+
+    @Override
+    public int increaseUserReplyCountByUserId(Long userId) {
+        return userMapper.increaseUserReplyCountByUserId(userId);
+    }
+
+    @Override
+    public int updateUserEmailVerifiedByUserId(Long userId) {
+        return userMapper.updateUserEmailVerifiedByUserId(userId);
+    }
+
+    @Override
+    public int updateUserEmailByUserId(Long userId, String email) {
+        return userMapper.updateUserEmailByUserId(userId, email);
     }
 
 }

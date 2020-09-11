@@ -29,6 +29,16 @@ public class Reply implements Serializable {
     private Long topicId;
 
     /**
+     * 所属板块编号
+     */
+    private Long boardId;
+
+    /**
+     * 所属分区编号
+     */
+    private Long categoryId;
+
+    /**
      * 回复内容 150000字符内
      */
     private String content;
